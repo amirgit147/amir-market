@@ -1,196 +1,72 @@
+<!-- مستقل‌ترین نسخه: فقط کافیست این کد را در یک فایل .html ذخیره کنید -->
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت | هایپر مارکت لوکس ایران</title>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <title>امیر مارکت | نسخه ایستا و سریع</title>
     <style>
-        :root {
-            --primary: #0a192f; --gold: #d4af37; --white: #ffffff;
-            --bg: #f4f7f6; --text: #1a1a1a; --card-bg: #ffffff;
-            --blur-bg: rgba(0, 0, 0, 0.4);
-        }
-        [data-theme="dark"] {
-            --primary: #020617; --gold: #f1d592; --white: #1e293b;
-            --bg: #0f172a; --text: #f8fafc; --card-bg: #1e293b;
-        }
+        :root { --p: #0a192f; --g: #d4af37; --bg: #f8f9fa; --t: #111; --card: #fff; }
+        [data-theme="dark"] { --p: #010409; --g: #f1d592; --bg: #0d1117; --t: #f0f6fc; --card: #161b22; }
+        body { background: var(--bg); color: var(--t); font-family: Tahoma; margin: 0; transition: 0.4s; }
+        
+        /* لودینگ خفن */
+        #loader { position: fixed; inset: 0; background: var(--p); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .spin { width: 50px; height: 50px; border: 4px solid var(--g); border-top-color: transparent; border-radius: 50%; animation: s 1s linear infinite; }
+        @keyframes s { to { transform: rotate(360deg); } }
 
-        * { box-sizing: border-box; font-family: Vazirmatn, sans-serif; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
-
-        /* --- Loading Screen --- */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); z-index: 9999; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-        .spinner { width: 80px; height: 80px; border: 5px solid var(--gold); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* --- Header & Search Blur --- */
-        header { 
-            background: var(--primary); padding: 10px 5%; display: flex; 
-            align-items: center; justify-content: space-between; position: sticky; 
-            top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .search-container { position: relative; flex: 0.5; z-index: 1001; }
-        .search-input { 
-            width: 100%; padding: 12px 20px; border-radius: 12px; border: none; 
-            outline: none; font-size: 14px; background: rgba(255,255,255,0.1); color: white;
-        }
-        .search-input:focus { background: white; color: black; }
-        .search-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--blur-bg); backdrop-filter: blur(10px);
-            display: none; z-index: 1000;
-        }
-        .suggestions {
-            position: absolute; top: 110%; right: 0; width: 100%; 
-            background: white; border-radius: 10px; display: none; color: #333;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
-        }
-        .suggestions div { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .suggestions div:hover { background: var(--gold); color: white; }
-
-        /* --- UI Controls --- */
-        .nav-actions { display: flex; gap: 20px; align-items: center; }
-        .icon-link { color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: bold; }
-        .icon-link:hover { color: var(--gold); }
-        .theme-toggle { background: var(--gold); color: var(--primary); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        /* --- Layout --- */
-        .shop-wrapper { display: flex; max-width: 1500px; margin: 30px auto; padding: 0 20px; gap: 20px; }
-        .filters { flex: 0 0 300px; background: var(--card-bg); border-radius: 20px; padding: 25px; height: fit-content; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .product-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-
-        /* --- Product Card --- */
-        .card { 
-            background: var(--card-bg); border-radius: 18px; padding: 15px; 
-            text-align: center; border: 1px solid rgba(0,0,0,0.05); position: relative;
-            animation: fadeInUp 0.5s ease backwards;
-        }
-        .card:hover { transform: translateY(-10px); border-color: var(--gold); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
-        .card .price { font-size: 20px; font-weight: 900; color: var(--gold); margin: 10px 0; display: block; }
-        .card h4 { font-size: 14px; margin: 10px 0; height: 40px; overflow: hidden; }
-        .add-btn { 
-            width: 100%; padding: 12px; border: none; border-radius: 10px; 
-            background: var(--primary); color: white; cursor: pointer; font-weight: bold;
-        }
-
-        /* --- Footer & Info --- */
-        .packaging-info { background: #e9ecef; padding: 10px; border-radius: 8px; margin-top: 20px; font-size: 13px; color: #666; border-right: 4px solid var(--gold); }
-        [data-theme="dark"] .packaging-info { background: #1e293b; color: #cbd5e1; }
-
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* هدر و بلور جستجو */
+        header { background: var(--p); padding: 1rem 5%; display: flex; gap: 2rem; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .search-box { flex: 1; position: relative; z-index: 1100; }
+        .search-box input { width: 100%; padding: 12px; border-radius: 8px; border: none; outline: none; }
+        .blur-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none; z-index: 1050; }
+        
+        /* محصولات و فیلتر */
+        .layout { display: flex; padding: 2rem; gap: 2rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; flex: 1; }
+        .card { background: var(--card); padding: 1rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .card img { width: 100%; border-radius: 10px; }
+        
+        /* هزینه بسته‌بندی */
+        .fee { background: var(--g); color: var(--p); padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 1rem; }
     </style>
 </head>
 <body>
-
-    <!-- لودینگ -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <h2 style="color: var(--gold); margin-top: 20px;">امیر مارکت ...</h2>
-    </div>
-
-    <!-- لایه تار کننده -->
-    <div class="search-overlay" id="overlay"></div>
+    <div id="loader"><div class="spin"></div></div>
+    <div class="blur-overlay" id="blur"></div>
 
     <header>
-        <a href="/" class="icon-link" style="font-size: 24px; color: var(--gold);">امیر مارکت</a>
-        
-        <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="جستجو بین ۵۰+ کالای لوکس...">
-            <div class="suggestions" id="suggestions">
-                <div>زعفران ممتاز قائنات</div>
-                <div>قهوه عربیکا اختصاصی</div>
-                <div>خاویار بلوگا اصل</div>
-                <div>شکلات دست‌ساز بلژیکی</div>
-            </div>
+        <div style="color:var(--g); font-size:1.5rem; font-weight:bold;">امیر مارکت</div>
+        <div class="search-box">
+            <input type="text" id="src" placeholder="جستجو در ۵۰ محصول لوکس...">
+            <div id="sugg" style="display:none; position:absolute; background:white; width:100%; color:black; border-radius:8px; margin-top:5px; padding:10px;">پیشنهاد: خاویار، زعفران، قهوه...</div>
         </div>
-
-        <div class="nav-actions">
-            <button class="theme-toggle" onclick="toggleTheme()">تغییر تم</button>
-            <a href="/login.html" class="icon-link">👤 ورود / عضویت</a>
-            <a href="/cart.html" class="icon-link">🛒 سبد خرید</a>
-        </div>
+        <button onclick="document.body.toggleAttribute('data-theme')">🌙/☀️</button>
+        <a href="/login" style="color:white; text-decoration:none;">👤 ورود</a>
+        <a href="/cart" style="color:white; text-decoration:none;">🛒 سبد</a>
     </header>
 
-    <div class="shop-wrapper">
-        <aside class="filters">
-            <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">فیلترها</h3>
-            <p>برندها</p>
-            <label><input type="checkbox"> امیر اکسکلوسیو</label><br>
-            <label><input type="checkbox"> وارداتی</label><hr>
-            <p>محدوده قیمت</p>
-            <input type="range" style="width: 100%; accent-color: var(--gold);">
-            <div class="packaging-info">
-                📦 هزینه بسته‌بندی حرفه‌ای: <strong>۱۰,۰۰۰ تومان</strong>
-            </div>
+    <div class="layout">
+        <aside style="width:250px;">
+            <h3>فیلترها</h3>
+            <label><input type="checkbox"> برند امیر</label><br>
+            <label><input type="checkbox"> موجود</label>
+            <div class="fee">هزینه بسته‌بندی: ۱۰,۰۰۰ تومان</div>
         </aside>
-
-        <main class="product-grid" id="productContainer">
-            <!-- ۵۰ محصول توسط جاوا اسکریپت اینجا ساخته می‌شوند -->
-        </main>
+        <main class="grid" id="container"></main>
     </div>
 
     <script>
-        // ۱. حذف لودینگ بعد از ۲ ثانیه
-        window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-            }, 1500);
-        };
-
-        // ۲. تولید ۵۰ محصول با اطلاعات واقعی
-        const container = document.getElementById('productContainer');
-        const products = [
-            { name: "زعفران یک مثقالی", price: "۴۵۰,۰۰۰", img: "https://picsum.photos/200/200?random=1" },
-            { name: "قهوه گلد ۱۰۰ گرمی", price: "۲۸۰,۰۰۰", img: "https://picsum.photos/200/200?random=2" },
-            { name: "خاویار دریای خزر", price: "۵,۲۰۰,۰۰۰", img: "https://picsum.photos/200/200?random=3" },
-            { name: "شکلات تلخ ۹۰٪", price: "۱۲۵,۰۰۰", img: "https://picsum.photos/200/200?random=4" },
-            { name: "روغن زیتون ایتالیایی", price: "۶۸۰,۰۰۰", img: "https://picsum.photos/200/200?random=5" }
-        ];
-
-        for (let i = 0; i < 50; i++) {
-            const p = products[i % products.length];
-            container.innerHTML += `
-                <div class="card" style="animation-delay: ${i * 0.05}s">
-                    <img src="${p.img}" alt="محصول">
-                    <span style="font-size: 12px; color: var(--gold);">برند امیر</span>
-                    <h4>${p.name} - سری ${i+1}</h4>
-                    <span class="price">${p.price} <span>تومان</span></span>
-                    <button class="add-btn">افزودن به سبد</button>
-                </div>
-            `;
+        // تولید ۵۰ محصول
+        const c = document.getElementById('container');
+        for(let i=1; i<=50; i++) {
+            c.innerHTML += `<div class="card"><img src="https://picsum.photos/200?sig=${i}"><h4>کالای لوکس شماره ${i}</h4><p style="color:var(--g)">۵۰۰,۰۰۰ تومان</p><button style="width:100%; border:none; background:var(--p); color:white; padding:10px; border-radius:8px; cursor:pointer;">خرید</button></div>`;
         }
-
-        // ۳. سیستم جستجو و تار شدن صفحه
-        const searchInput = document.getElementById('searchInput');
-        const overlay = document.getElementById('overlay');
-        const suggestions = document.getElementById('suggestions');
-
-        searchInput.onfocus = () => {
-            overlay.style.display = 'block';
-            suggestions.style.display = 'block';
-        };
-
-        overlay.onclick = () => {
-            overlay.style.display = 'none';
-            suggestions.style.display = 'none';
-        };
-
-        // ۴. سیستم تغییر تم (Dark Mode)
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                body.removeAttribute('data-theme');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-            }
-        }
+        // لودینگ و جستجو
+        window.onload = () => document.getElementById('loader').remove();
+        const src = document.getElementById('src');
+        const blur = document.getElementById('blur');
+        src.onfocus = () => { blur.style.display = 'block'; document.getElementById('sugg').style.display='block'; };
+        blur.onclick = () => { blur.style.display = 'none'; document.getElementById('sugg').style.display='none'; };
     </script>
 </body>
 </html>
