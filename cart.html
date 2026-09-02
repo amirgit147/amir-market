@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سبد خرید | امیر مارکت</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root { --dark-blue: #001f3f; --gold: #D4AF37; --white: #ffffff; }
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f4f4f4; margin: 0; }
+        header { background: var(--dark-blue); color: var(--gold); padding: 20px 5%; text-align: center; }
+        
+        .cart-container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        .cart-item { 
+            background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-icon { font-size: 40px; }
+        .quantity-cnt { display: flex; align-items: center; gap: 10px; }
+        .btn-q { background: var(--gold); border: none; width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .total-box { 
+            background: var(--dark-blue); color: var(--gold); padding: 20px; 
+            border-radius: 15px; text-align: center; margin-top: 20px;
+        }
+        .btn-checkout { 
+            background: var(--gold); color: var(--dark-blue); border: none; 
+            padding: 12px 40px; border-radius: 30px; font-weight: bold; cursor: pointer;
+            margin-top: 15px; font-size: 1.1rem; width: 100%;
+        }
+        .empty-msg { text-align: center; padding: 50px; color: #777; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--dark-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>سبد خرید شما</h1>
+    <small>امیر مارکت | بهترین در کشور</small>
+</header>
+
+<div class="cart-container">
+    <div id="cartItems">
+        <!-- آیتم‌ها اینجا نمایش داده می‌شوند -->
+    </div>
+    
+    <div id="totalSection" class="total-box" style="display: none;">
+        <h3>جمع کل خرید: <span id="finalPrice">۰</span> تومان</h3>
+        <button class="btn-checkout" onclick="goToLogin()">تکمیل فرآیند خرید</button>
+    </div>
+    
+    <a href="index.html" class="back-link">← بازگشت به فروشگاه</a>
+</div>
+
+<script>
+    function renderCart() {
+        const cart = JSON.parse(localStorage.getItem('amirCart')) || [];
+        const container = document.getElementById('cartItems');
+        const totalSection = document.getElementById('totalSection');
+        let total = 0;
+
+        if (cart.length === 0) {
+            container.innerHTML = '<div class="empty-msg"><h3>سبد خرید شما خالی است! 🛒</h3></div>';
+            totalSection.style.display = 'none';
+            return;
+        }
+
+        totalSection.style.display = 'block';
+        container.innerHTML = '';
+        cart.forEach((item, index) => {
+            total += item.price * item.qty;
+            container.innerHTML += `
+                <div class="cart-item animate__animated animate__fadeIn">
+                    <div class="item-info">
+                        <span class="item-icon">${item.icon}</span>
+                        <div>
+                            <h4 style="margin:0">${item.name}</h4>
+                            <small>${item.price.toLocaleString()} تومان</small>
+                        </div>
+                    </div>
+                    <div class="quantity-cnt">
+                        <button class="btn-q" onclick="changeQty(${index}, 1)">+</button>
+                        <span>${item.qty}</span>
+                        <button class="btn-q" onclick="changeQty(${index}, -1)">-</button>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('finalPrice').innerText = total.toLocaleString();
+    }
+
+    function changeQty(index, delta) {
+        let cart = JSON.parse(localStorage.getItem('amirCart'));
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+        localStorage.setItem('amirCart', JSON.stringify(cart));
+        renderCart();
+    }
+
+    function goToLogin() {
+        window.location.href = 'login.html';
+    }
+
+    window.onload = renderCart;
+</script>
+</body>
+</html>
