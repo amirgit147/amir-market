@@ -2,18 +2,160 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>خطای ۴۰۴ | پیدا نشد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه پیدا نشد | امیر مارکت</title>
+    <!-- فونت اصیل وزیر -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <!-- کتابخانه انیمیشن -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
     <style>
-        body { background: #001f3f; color: #D4AF37; font-family: 'Vazirmatn'; text-align: center; padding-top: 100px; }
-        h1 { font-size: 10rem; margin: 0; }
-        .back-home { color: white; text-decoration: none; border: 1px solid #D4AF37; padding: 10px 20px; border-radius: 5px; }
+        :root {
+            --dark-blue: #001f3f;
+            --gold: #D4AF37;
+            --soft-gold: #f1d279;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-blue);
+            color: var(--gold);
+            font-family: 'Vazirmatn', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* پس‌زمینه تزئینی */
+        body::before {
+            content: "AMIR MARKET";
+            position: absolute;
+            font-size: 15vw;
+            font-weight: 900;
+            color: rgba(212, 175, 55, 0.03);
+            z-index: -1;
+            white-space: nowrap;
+        }
+
+        .error-container {
+            max-width: 600px;
+            padding: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to bottom, var(--gold), var(--soft-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        .icon-box {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h2 {
+            font-size: 28px;
+            color: var(--white);
+            margin: 20px 0 10px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .slogan {
+            display: block;
+            font-size: 14px;
+            color: var(--gold);
+            margin-top: 10px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .btn-return {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--gold);
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-return:hover {
+            transform: scale(1.05);
+            background: var(--white);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* خطای لودینگ کوچک اختصاصی صفحه 404 */
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.5;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
     </style>
 </head>
 <body>
-    <h1>۴۰۴</h1>
-    <h2>اوه! مسیر را اشتباه آمدید.</h2>
-    <p>کالای مورد نظر شما در انبار امیر مارکت موجود نیست یا آدرس اشتباه است.</p>
-    <br><br>
-    <a href="index.html" class="back-home">بازگشت به قفسه‌های فروشگاه</a>
+
+    <div class="scan-line"></div>
+
+    <div class="error-container animate__animated animate__zoomIn">
+        <div class="icon-box">📦</div>
+        <h1 class="error-code">۴۰۴</h1>
+        <h2 class="animate__animated animate__fadeInUp animate__delay-1s">اوه! این قفسه در امیر مارکت خالی است</h2>
+        <p class="animate__animated animate__fadeInUp animate__delay-1s">
+            متأسفانه کالای مورد نظر یا این صفحه در انبار فروشگاه یافت نشد. 
+            شاید آدرس را اشتباه وارد کرده‌اید.
+        </p>
+        
+        <a href="index.html" class="btn-return animate__animated animate__pulse animate__infinite">
+            بازگشت به هایپرمارکت
+        </a>
+
+        <span class="slogan">«بهترین هایپر مارکت در کشور»</span>
+    </div>
+
 </body>
 </html>
