@@ -3,107 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فروشگاه امیر مارکت | بهترین هایپر مارکت کشور</title>
+    <title>امیر مارکت | هایپر مارکت لوکس ایران</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
-        :root { --blue: #0a192f; --gold: #d4af37; --bg: #f0f2f5; --white: #ffffff; }
-        * { box-sizing: border-box; font-family: Vazirmatn, sans-serif; transition: all 0.3s ease; }
-        body { background: var(--bg); margin: 0; color: #333; }
+        :root {
+            --primary: #0a192f; --gold: #d4af37; --white: #ffffff;
+            --bg: #f4f7f6; --text: #1a1a1a; --card-bg: #ffffff;
+            --blur-bg: rgba(0, 0, 0, 0.4);
+        }
+        [data-theme="dark"] {
+            --primary: #020617; --gold: #f1d592; --white: #1e293b;
+            --bg: #0f172a; --text: #f8fafc; --card-bg: #1e293b;
+        }
 
-        /* Header */
-        header { background: var(--blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .logo { font-size: 26px; font-weight: 900; color: var(--gold); text-decoration: none; }
-        .search-bar { flex: 0.6; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 15px; display: flex; }
-        .search-bar input { background: none; border: none; color: white; width: 100%; outline: none; }
+        * { box-sizing: border-box; font-family: Vazirmatn, sans-serif; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
 
-        /* Layout */
-        .main-container { display: flex; max-width: 1440px; margin: 30px auto; padding: 0 20px; gap: 25px; }
-        
-        /* Filters Sidebar */
-        .sidebar { flex: 0 0 300px; background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-        .filter-section { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .filter-section h4 { margin: 0 0 15px 0; color: var(--blue); font-size: 16px; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; cursor: pointer; }
-        .checkbox-group input { width: 18px; height: 18px; accent-color: var(--gold); }
-        .price-range { width: 100%; accent-color: var(--gold); }
+        /* --- Loading Screen --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); z-index: 9999; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .spinner { width: 80px; height: 80px; border: 5px solid var(--gold); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Products Grid */
-        .products-wrapper { flex: 1; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .product-card { background: var(--white); border-radius: 15px; padding: 15px; text-align: center; position: relative; border: 1px solid transparent; }
-        .product-card:hover { transform: translateY(-8px); border-color: var(--gold); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; background: #f9f9f9; }
-        .brand-tag { font-size: 12px; color: var(--gold); font-weight: bold; margin-top: 10px; display: block; }
-        .product-card h3 { font-size: 15px; margin: 10px 0; height: 40px; overflow: hidden; }
-        .price-tag { color: var(--blue); font-weight: 800; font-size: 18px; }
-        .price-tag span { font-size: 12px; font-weight: normal; }
-        .buy-btn { width: 100%; background: var(--blue); color: var(--gold); border: none; padding: 12px; border-radius: 10px; margin-top: 15px; cursor: pointer; font-weight: bold; }
-        .buy-btn:hover { background: var(--gold); color: var(--blue); }
+        /* --- Header & Search Blur --- */
+        header { 
+            background: var(--primary); padding: 10px 5%; display: flex; 
+            align-items: center; justify-content: space-between; position: sticky; 
+            top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .search-container { position: relative; flex: 0.5; z-index: 1001; }
+        .search-input { 
+            width: 100%; padding: 12px 20px; border-radius: 12px; border: none; 
+            outline: none; font-size: 14px; background: rgba(255,255,255,0.1); color: white;
+        }
+        .search-input:focus { background: white; color: black; }
+        .search-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--blur-bg); backdrop-filter: blur(10px);
+            display: none; z-index: 1000;
+        }
+        .suggestions {
+            position: absolute; top: 110%; right: 0; width: 100%; 
+            background: white; border-radius: 10px; display: none; color: #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .suggestions div { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .suggestions div:hover { background: var(--gold); color: white; }
 
-        /* Footer */
-        footer { background: var(--blue); color: white; padding: 50px 5%; text-align: center; margin-top: 50px; }
+        /* --- UI Controls --- */
+        .nav-actions { display: flex; gap: 20px; align-items: center; }
+        .icon-link { color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: bold; }
+        .icon-link:hover { color: var(--gold); }
+        .theme-toggle { background: var(--gold); color: var(--primary); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* Responsive */
-        @media (max-width: 1024px) { .sidebar { display: none; } }
+        /* --- Layout --- */
+        .shop-wrapper { display: flex; max-width: 1500px; margin: 30px auto; padding: 0 20px; gap: 20px; }
+        .filters { flex: 0 0 300px; background: var(--card-bg); border-radius: 20px; padding: 25px; height: fit-content; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .product-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+
+        /* --- Product Card --- */
+        .card { 
+            background: var(--card-bg); border-radius: 18px; padding: 15px; 
+            text-align: center; border: 1px solid rgba(0,0,0,0.05); position: relative;
+            animation: fadeInUp 0.5s ease backwards;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--gold); }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
+        .card .price { font-size: 20px; font-weight: 900; color: var(--gold); margin: 10px 0; display: block; }
+        .card h4 { font-size: 14px; margin: 10px 0; height: 40px; overflow: hidden; }
+        .add-btn { 
+            width: 100%; padding: 12px; border: none; border-radius: 10px; 
+            background: var(--primary); color: white; cursor: pointer; font-weight: bold;
+        }
+
+        /* --- Footer & Info --- */
+        .packaging-info { background: #e9ecef; padding: 10px; border-radius: 8px; margin-top: 20px; font-size: 13px; color: #666; border-right: 4px solid var(--gold); }
+        [data-theme="dark"] .packaging-info { background: #1e293b; color: #cbd5e1; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="#" class="logo">امیر <span>مارکت</span></a>
-    <div class="search-bar"><input type="text" placeholder="جستجو در کالاهای لوکس..."></div>
-    <div class="actions">سبد خرید (۰) | ورود</div>
-</header>
+    <!-- لودینگ -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <h2 style="color: var(--gold); margin-top: 20px;">امیر مارکت ...</h2>
+    </div>
 
-<div class="main-container">
-    <aside class="sidebar">
-        <div class="filter-section">
-            <h4>دسته‌بندی‌ها</h4>
-            <label class="checkbox-group"><input type="checkbox"> لبنیات و پنیرهای خاص</label>
-            <label class="checkbox-group"><input type="checkbox"> پروتئین اعلا</label>
-            <label class="checkbox-group"><input type="checkbox"> تنقلات وارداتی</label>
-        </div>
-        <div class="filter-section">
-            <h4>برندها</h4>
-            <label class="checkbox-group"><input type="checkbox"> امیر اکسکلوسیو</label>
-            <label class="checkbox-group"><input type="checkbox"> کاله پرو</label>
-            <label class="checkbox-group"><input type="checkbox"> نستله</label>
-        </div>
-        <div class="filter-section">
-            <h4>محدوده قیمت</h4>
-            <input type="range" class="price-range">
-            <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:10px;">
-                <span>۰</span><span>۱۰,۰۰۰,۰۰۰ تومان</span>
+    <!-- لایه تار کننده -->
+    <div class="search-overlay" id="overlay"></div>
+
+    <header>
+        <a href="/" class="icon-link" style="font-size: 24px; color: var(--gold);">امیر مارکت</a>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="جستجو بین ۵۰+ کالای لوکس...">
+            <div class="suggestions" id="suggestions">
+                <div>زعفران ممتاز قائنات</div>
+                <div>قهوه عربیکا اختصاصی</div>
+                <div>خاویار بلوگا اصل</div>
+                <div>شکلات دست‌ساز بلژیکی</div>
             </div>
         </div>
-        <label class="checkbox-group" style="margin-top:20px;"><input type="checkbox"> فقط کالاهای موجود</label>
-    </aside>
 
-    <main class="products-wrapper">
-        <div class="grid" id="productGrid">
-            <!-- ۱۰ محصول نمونه -->
-            <script>
-                const pName = ["خاویار بلوگا", "استیک ریب‌آی", "قهوه برند امیر", "عسل طبیعی مانوکا", "پنیر پارمزان ۲۴ ماهه", "شکلات تلخ بلژیکی", "روغن ترافل سفید", "آب معدنی گازدار نروژی"];
-                const pPrice = ["۴,۸۰۰,۰۰۰", "۱,۲۰۰,۰۰۰", "۶۵۰,۰۰۰", "۲,۳۰۰,۰۰۰", "۸۹۰,۰۰۰", "۴۲۰,۰۰۰", "۱,۵۰۰,۰۰۰", "۱۸۰,۰۰۰"];
-                for(let i=0; i<8; i++){
-                    document.write(`
-                        <div class="product-card">
-                            <img src="https://via.placeholder.com/250?text=Product+${i+1}" alt="محصول">
-                            <span class="brand-tag">PREMIUM BRAND</span>
-                            <h3>${pName[i]}</h3>
-                            <div class="price-tag">${pPrice[i]} <span>تومان</span></div>
-                            <button class="buy-btn">افزودن به سبد</button>
-                        </div>
-                    `);
-                }
-            </script>
+        <div class="nav-actions">
+            <button class="theme-toggle" onclick="toggleTheme()">تغییر تم</button>
+            <a href="/login.html" class="icon-link">👤 ورود / عضویت</a>
+            <a href="/cart.html" class="icon-link">🛒 سبد خرید</a>
         </div>
-    </main>
-</div>
+    </header>
 
-<footer>
-    <p>امیر مارکت - بهترین هایپر مارکت در کشور</p>
-    <small>طراحی شده با استانداردهای مدرن ۲۰۲۵</small>
-</footer>
+    <div class="shop-wrapper">
+        <aside class="filters">
+            <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">فیلترها</h3>
+            <p>برندها</p>
+            <label><input type="checkbox"> امیر اکسکلوسیو</label><br>
+            <label><input type="checkbox"> وارداتی</label><hr>
+            <p>محدوده قیمت</p>
+            <input type="range" style="width: 100%; accent-color: var(--gold);">
+            <div class="packaging-info">
+                📦 هزینه بسته‌بندی حرفه‌ای: <strong>۱۰,۰۰۰ تومان</strong>
+            </div>
+        </aside>
+
+        <main class="product-grid" id="productContainer">
+            <!-- ۵۰ محصول توسط جاوا اسکریپت اینجا ساخته می‌شوند -->
+        </main>
+    </div>
+
+    <script>
+        // ۱. حذف لودینگ بعد از ۲ ثانیه
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+            }, 1500);
+        };
+
+        // ۲. تولید ۵۰ محصول با اطلاعات واقعی
+        const container = document.getElementById('productContainer');
+        const products = [
+            { name: "زعفران یک مثقالی", price: "۴۵۰,۰۰۰", img: "https://picsum.photos/200/200?random=1" },
+            { name: "قهوه گلد ۱۰۰ گرمی", price: "۲۸۰,۰۰۰", img: "https://picsum.photos/200/200?random=2" },
+            { name: "خاویار دریای خزر", price: "۵,۲۰۰,۰۰۰", img: "https://picsum.photos/200/200?random=3" },
+            { name: "شکلات تلخ ۹۰٪", price: "۱۲۵,۰۰۰", img: "https://picsum.photos/200/200?random=4" },
+            { name: "روغن زیتون ایتالیایی", price: "۶۸۰,۰۰۰", img: "https://picsum.photos/200/200?random=5" }
+        ];
+
+        for (let i = 0; i < 50; i++) {
+            const p = products[i % products.length];
+            container.innerHTML += `
+                <div class="card" style="animation-delay: ${i * 0.05}s">
+                    <img src="${p.img}" alt="محصول">
+                    <span style="font-size: 12px; color: var(--gold);">برند امیر</span>
+                    <h4>${p.name} - سری ${i+1}</h4>
+                    <span class="price">${p.price} <span>تومان</span></span>
+                    <button class="add-btn">افزودن به سبد</button>
+                </div>
+            `;
+        }
+
+        // ۳. سیستم جستجو و تار شدن صفحه
+        const searchInput = document.getElementById('searchInput');
+        const overlay = document.getElementById('overlay');
+        const suggestions = document.getElementById('suggestions');
+
+        searchInput.onfocus = () => {
+            overlay.style.display = 'block';
+            suggestions.style.display = 'block';
+        };
+
+        overlay.onclick = () => {
+            overlay.style.display = 'none';
+            suggestions.style.display = 'none';
+        };
+
+        // ۴. سیستم تغییر تم (Dark Mode)
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
 </body>
 </html>
