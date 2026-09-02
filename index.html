@@ -1,79 +1,9 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت | بهترین هایپر مارکت کشور</title>
-    <!-- فونت اصیل وزیر -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
-    <!-- انیمیشن‌ها -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <!-- ۱. صفحه لودینگ خفن -->
-    <div id="loader">
-        <div class="loader-content">
-            <div class="logo-animation">AM</div>
-            <div class="loading-bar"><span></span></div>
-            <p>در حال بارگذاری دنیای امیر مارکت...</p>
-        </div>
+<!-- در بخش Main فایل قبلی این تغییرات را اعمال کنید -->
+<main class="container">
+    <div id="productGrid" class="product-grid">
+        <!-- ۵۰ محصول اینجا ظاهر می‌شوند -->
     </div>
-
-    <!-- ۲. هدر و جستجو -->
-    <header>
-        <nav class="navbar">
-            <div class="logo-section">
-                <h1 class="animate__animated animate__fadeInRight">امیر مارکت</h1>
-                <span class="slogan">«بهترین هایپر مارکت در کشور»</span>
-            </div>
-            
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="جستجوی هوشمند بین محصولات..." onkeyup="liveSearch()">
-                <div id="searchDropdown" class="search-results"></div>
-            </div>
-
-            <div class="nav-links">
-                <a href="login.html">ورود / ثبت‌نام</a>
-                <div class="cart-icon" onclick="toggleCart()">
-                    🛒 <span id="cart-count">۰</span>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- ۳. بخش فیلترها -->
-    <section class="filter-bar">
-        <button onclick="filterBy('all')">همه محصولات</button>
-        <button onclick="filterBy('خواروبار')">خواروبار</button>
-        <button onclick="filterBy('لبنیات')">لبنیات</button>
-        <button onclick="filterBy('پروتئینی')">گوشت و مرغ</button>
-        <button onclick="filterBy('نوشیدنی')">نوشیدنی</button>
-    </section>
-
-    <!-- ۴. نمایش محصولات -->
-    <main class="container">
-        <div id="productGrid" class="product-grid">
-            <!-- محصولات توسط JS اینجا نمایش داده می‌شوند -->
-        </div>
-    </main>
-
-    <!-- ۵. پنل سبد خرید (جانبی) -->
-    <div id="sideCart" class="side-cart">
-        <h2>سبد خرید شما</h2>
-        <div id="cartItems"></div>
-        <hr>
-        <div class="cart-footer">
-            <p>هزینه ارسال: <span class="free">رایگان</span></p>
-            <p>هزینه بسته‌بندی: <span class="free">رایگان</span></p>
-            <h3 id="totalPrice">جمع کل: ۰ تومان</h3>
-            <div id="minOrderAlert" class="alert">حداقل خرید ۱۰۰,۰۰۰ تومان است</div>
-            <button id="checkoutBtn" class="btn-disabled" disabled>تسویه حساب و پرداخت</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    
+    <!-- بخش صفحه‌بندی -->
+    <div id="pagination" class="pagination"></div>
+</main>
