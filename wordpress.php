@@ -1,17 +1,30 @@
-<!-- shop.php -->
-<div class="luxury-grid">
-    <?php
-    $products = [
-        ['title' => 'شکلات تخته‌ای دست‌ساز', 'price' => '300,000'],
-        ['title' => 'چای سفید اشرافی', 'price' => '1,500,000'],
-        ['title' => 'پنیر پارمزان کهنه', 'price' => '600,000'],
-    ];
-
-    foreach ($products as $product): ?>
-        <div class="product-card">
-            <h3><?php echo $product['title']; ?></h3>
-            <p><?php echo $product['price']; ?> تومان</p>
-            <button>خرید آنلاین</button>
+<!-- products.blade.php -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card filter-card">
+            <form action="/filter" method="GET">
+                <h5>فیلتر بر اساس برند</h5>
+                @foreach($brands as $brand)
+                    <div class="form-check">
+                        <input type="checkbox" name="brand[]" value="{{ $brand->id }}">
+                        <label>{{ $brand->name }}</label>
+                    </div>
+                @endforeach
+                <hr>
+                <h5>محدوده قیمت</h5>
+                <input type="range" name="price" class="custom-range" min="0" max="5000000">
+                <button type="submit" class="btn btn-gold w-100 mt-3">اعمال فیلتر</button>
+            </form>
         </div>
-    <?php endforeach; ?>
-</div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="product-grid">
+            @forelse($products as $product)
+                @include('partials.product-card', ['product' => $product])
+            @empty
+                <div class="not-found">کالایی یافت نشد.</div>
+            @endforelse
+        </div>
+    </div>
+</div></div>
