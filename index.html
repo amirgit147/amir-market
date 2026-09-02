@@ -1,9 +1,288 @@
-<!-- در بخش Main فایل قبلی این تغییرات را اعمال کنید -->
-<main class="container">
-    <div id="productGrid" class="product-grid">
-        <!-- ۵۰ محصول اینجا ظاهر می‌شوند -->
-    </div>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امیر مارکت | هایپرمارکت لوکس</title>
     
-    <!-- بخش صفحه‌بندی -->
-    <div id="pagination" class="pagination"></div>
-</main>
+    <!-- فونت اصیل و انیمیشن -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --dark-blue: #001f3f;
+            --gold: #D4AF37;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            direction: rtl;
+        }
+
+        /* لودینگ خفن */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-blue);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--gold);
+        }
+
+        .loader-circle {
+            width: 80px;
+            height: 80px;
+            border: 5px solid #003366;
+            border-top: 5px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* هدر لوکس */
+        header {
+            background: var(--dark-blue);
+            color: var(--gold);
+            padding: 20px 5%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+            margin: 15px auto 0;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            color: #333;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* شبکه محصولات */
+        .container { padding: 20px 5%; }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid #eee;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+
+        .price { font-weight: bold; color: var(--dark-blue); font-size: 1.2rem; }
+
+        .add-btn {
+            background: var(--dark-blue);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .add-btn:hover { background: var(--gold); color: var(--dark-blue); }
+
+        /* صفحه‌بندی */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .pagination button {
+            background: white;
+            border: 1px solid var(--dark-blue);
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .pagination button.active {
+            background: var(--dark-blue);
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صفحه لودینگ -->
+    <div id="loader">
+        <div class="loader-circle"></div>
+        <h1 style="margin-top: 20px;">امیر مارکت</h1>
+        <p>در حال آماده‌سازی بهترین هایپر مارکت کشور...</p>
+    </div>
+
+    <header>
+        <div class="top-bar">
+            <div>
+                <h1 style="margin: 0; font-size: 1.5rem;">امیر مارکت</h1>
+                <small>«بهترین هایپر مارکت در کشور»</small>
+            </div>
+            <div id="cartStatus">🛒 سبد خرید: ۰ تومان</div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="جستجوی ۵۰ محصول لوکس..." onkeyup="doSearch()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="productGrid" class="product-grid"></div>
+        <div id="pagination" class="pagination"></div>
+    </div>
+
+    <script>
+        // ۱. ایجاد دیتابیس ۵۰ محصول با آیکون
+        const items = [
+            { id: 1, name: "برنج ایرانی", price: 750000, icon: "🌾" },
+            { id: 2, name: "روغن جامد", price: 95000, icon: "🏺" },
+            { id: 3, name: "شیر تازه", price: 28000, icon: "🥛" },
+            { id: 4, name: "پنیر تبریز", price: 110000, icon: "🧀" },
+            { id: 5, name: "گوشت راسته", price: 620000, icon: "🥩" },
+            { id: 6, name: "زعفران قائنات", price: 480000, icon: "🌸" },
+            { id: 7, name: "چای هندی", price: 145000, icon: "☕" },
+            { id: 8, name: "مرغ کشتار روز", price: 92000, icon: "🍗" },
+            { id: 9, name: "ماست چکیده", price: 55000, icon: "🥣" },
+            { id: 10, name: "تخم مرغ ۳۰ عددی", price: 115000, icon: "🥚" }
+        ];
+
+        // تولید خودکار تا ۵۰ محصول
+        for(let i=11; i<=50; i++) {
+            items.push({
+                id: i,
+                name: "کالای لوکس شماره " + i,
+                price: 50000 + (i * 2000),
+                icon: i % 2 === 0 ? "📦" : "🛍️"
+            });
+        }
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let cartTotal = 0;
+
+        // ۲. تابع نمایش محصولات
+        function render(page) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = items.slice(start, end);
+
+            pageItems.forEach(p => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <span class="product-icon">${p.icon}</span>
+                        <h3>${p.name}</h3>
+                        <p class="price">${p.price.toLocaleString()} تومان</p>
+                        <p style="font-size: 11px; color: green;">ارسال و بسته‌بندی رایگان</p>
+                        <button class="add-btn" onclick="addToCart(${p.price})">افزودن به سبد</button>
+                    </div>
+                `;
+            });
+            renderPagination();
+        }
+
+        // ۳. صفحه‌بندی
+        function renderPagination() {
+            const pDiv = document.getElementById('pagination');
+            pDiv.innerHTML = "";
+            const totalPages = Math.ceil(items.length / itemsPerPage);
+
+            for(let i=1; i<=totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                if(i === currentPage) btn.className = "active";
+                btn.onclick = () => { currentPage = i; render(i); window.scrollTo(0,0); };
+                pDiv.appendChild(btn);
+            }
+        }
+
+        // ۴. جستجوی هوشمند
+        function doSearch() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const res = document.getElementById('searchResults');
+            if(val.length < 1) { res.style.display = 'none'; return; }
+
+            const filtered = items.filter(i => i.name.includes(val));
+            res.style.display = 'block';
+            res.innerHTML = filtered.map(f => `
+                <div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer" onclick="addToCart(${f.price})">
+                    ${f.icon} ${f.name} - ${f.price.toLocaleString()} تومان
+                </div>
+            `).join('');
+        }
+
+        // ۵. سبد خرید
+        function addToCart(pr) {
+            cartTotal += pr;
+            document.getElementById('cartStatus').innerText = `🛒 سبد خرید: ${cartTotal.toLocaleString()} تومان`;
+            if(cartTotal < 100000) {
+                alert("توجه: حداقل مبلغ سفارش ۱۰۰,۰۰۰ تومان است.");
+            }
+        }
+
+        // خروج از لودینگ بعد از ۲ ثانیه
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                render(1);
+            }, 2000);
+        };
+    </script>
+</body>
+</html>
