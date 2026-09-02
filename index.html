@@ -187,102 +187,40 @@
     </div>
 
     <script>
-        // ۱. ایجاد دیتابیس ۵۰ محصول با آیکون
-        const items = [
-            { id: 1, name: "برنج ایرانی", price: 750000, icon: "🌾" },
-            { id: 2, name: "روغن جامد", price: 95000, icon: "🏺" },
-            { id: 3, name: "شیر تازه", price: 28000, icon: "🥛" },
-            { id: 4, name: "پنیر تبریز", price: 110000, icon: "🧀" },
-            { id: 5, name: "گوشت راسته", price: 620000, icon: "🥩" },
-            { id: 6, name: "زعفران قائنات", price: 480000, icon: "🌸" },
-            { id: 7, name: "چای هندی", price: 145000, icon: "☕" },
-            { id: 8, name: "مرغ کشتار روز", price: 92000, icon: "🍗" },
-            { id: 9, name: "ماست چکیده", price: 55000, icon: "🥣" },
-            { id: 10, name: "تخم مرغ ۳۰ عددی", price: 115000, icon: "🥚" }
-        ];
+       // جایگزین تابع addToCart قبلی شود
+let cart = JSON.parse(localStorage.getItem('amirCart')) || [];
 
-        // تولید خودکار تا ۵۰ محصول
-        for(let i=11; i<=50; i++) {
-            items.push({
-                id: i,
-                name: "کالای لوکس شماره " + i,
-                price: 50000 + (i * 2000),
-                icon: i % 2 === 0 ? "📦" : "🛍️"
-            });
-        }
+function addToCart(productId) {
+    const product = items.find(p => p.id === productId);
+    const existing = cart.find(item => item.id === productId);
 
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let cartTotal = 0;
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...product, qty: 1 });
+    }
 
-        // ۲. تابع نمایش محصولات
-        function render(page) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = "";
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = items.slice(start, end);
+    localStorage.setItem('amirCart', JSON.stringify(cart));
+    updateCartStatus();
+    
+    // افکت بصری
+    const btn = event.target;
+    btn.innerText = "اضافه شد ✅";
+    setTimeout(() => btn.innerText = "افزودن به سبد", 1000);
+}
 
-            pageItems.forEach(p => {
-                grid.innerHTML += `
-                    <div class="product-card">
-                        <span class="product-icon">${p.icon}</span>
-                        <h3>${p.name}</h3>
-                        <p class="price">${p.price.toLocaleString()} تومان</p>
-                        <p style="font-size: 11px; color: green;">ارسال و بسته‌بندی رایگان</p>
-                        <button class="add-btn" onclick="addToCart(${p.price})">افزودن به سبد</button>
-                    </div>
-                `;
-            });
-            renderPagination();
-        }
+function updateCartStatus() {
+    let total = 0;
+    cart.forEach(item => total += (item.price * item.qty));
+    document.getElementById('cartStatus').innerHTML = `
+        <a href="cart.html" style="text-decoration:none; color:var(--gold);">
+            🛒 سبد خرید: ${total.toLocaleString()} تومان
+        </a>
+    `;
+}
 
-        // ۳. صفحه‌بندی
-        function renderPagination() {
-            const pDiv = document.getElementById('pagination');
-            pDiv.innerHTML = "";
-            const totalPages = Math.ceil(items.length / itemsPerPage);
-
-            for(let i=1; i<=totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.innerText = i;
-                if(i === currentPage) btn.className = "active";
-                btn.onclick = () => { currentPage = i; render(i); window.scrollTo(0,0); };
-                pDiv.appendChild(btn);
-            }
-        }
-
-        // ۴. جستجوی هوشمند
-        function doSearch() {
-            const val = document.getElementById('searchInput').value.toLowerCase();
-            const res = document.getElementById('searchResults');
-            if(val.length < 1) { res.style.display = 'none'; return; }
-
-            const filtered = items.filter(i => i.name.includes(val));
-            res.style.display = 'block';
-            res.innerHTML = filtered.map(f => `
-                <div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer" onclick="addToCart(${f.price})">
-                    ${f.icon} ${f.name} - ${f.price.toLocaleString()} تومان
-                </div>
-            `).join('');
-        }
-
-        // ۵. سبد خرید
-        function addToCart(pr) {
-            cartTotal += pr;
-            document.getElementById('cartStatus').innerText = `🛒 سبد خرید: ${cartTotal.toLocaleString()} تومان`;
-            if(cartTotal < 100000) {
-                alert("توجه: حداقل مبلغ سفارش ۱۰۰,۰۰۰ تومان است.");
-            }
-        }
-
-        // خروج از لودینگ بعد از ۲ ثانیه
-        window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                render(1);
-            }, 2000);
-        };
+// در انتهای window.onload فراخوانی شود
+updateCartStatus();
     </script>
 </body>
 </html>
