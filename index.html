@@ -187,8 +187,85 @@
     </div>
 
     <script>
-     // ۱. ایجاد دیتابیس ۵۰ محصول با آیکون
-        const items = [
+    <!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امیر مارکت | هایپرمارکت لوکس</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root { --dark-blue: #001f3f; --gold: #D4AF37; --white: #ffffff; }
+        body { font-family: 'Vazirmatn', sans-serif; margin: 0; background-color: #f4f4f4; direction: rtl; }
+
+        /* لودینگ */
+        #loader {
+            position: fixed; inset: 0; background: var(--dark-blue); z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--gold);
+        }
+        .loader-circle {
+            width: 80px; height: 80px; border: 5px solid #003366; border-top: 5px solid var(--gold);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        header { background: var(--dark-blue); color: var(--gold); padding: 20px 5%; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; }
+        
+        .search-container { position: relative; max-width: 500px; width: 100%; margin: 15px auto 0; }
+        .search-container input { width: 100%; padding: 12px 20px; border-radius: 30px; border: 2px solid var(--gold); background: rgba(255,255,255,0.1); color: white; outline: none; }
+
+        .container { padding: 20px 5%; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 15px; padding: 20px; text-align: center; transition: 0.3s; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-icon { font-size: 50px; display: block; margin-bottom: 10px; }
+        .price { font-weight: bold; color: var(--dark-blue); font-size: 1.2rem; margin: 10px 0; }
+        
+        .add-btn { background: var(--dark-blue); color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; }
+        .add-btn:hover { background: var(--gold); color: var(--dark-blue); }
+
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 40px; }
+        .pagination button { background: white; border: 1px solid var(--dark-blue); padding: 8px 15px; cursor: pointer; border-radius: 5px; }
+        .pagination button.active { background: var(--dark-blue); color: var(--gold); }
+        
+        #cartStatus a { color: var(--gold); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-circle"></div>
+        <h1 style="margin-top: 20px;">امیر مارکت</h1>
+        <p>در حال آماده‌سازی بهترین هایپر مارکت کشور...</p>
+    </div>
+
+    <header>
+        <div class="top-bar">
+            <div>
+                <h1 style="margin: 0; font-size: 1.5rem;">امیر مارکت</h1>
+                <small>«بهترین هایپر مارکت در کشور»</small>
+            </div>
+            <div id="cartStatus">
+                <a href="cart.html">🛒 سبد خرید: ۰ تومان</a>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="جستجو در محصولات لوکس..." onkeyup="doSearch()">
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="productGrid" class="product-grid"></div>
+        <div id="pagination" class="pagination"></div>
+    </div>
+
+    <script>
+        // دیتابیس محصولات (ترکیب شده و واحد)
+        const products = [
             { id: 1, name: "برنج ایرانی", price: 750000, icon: "🌾" },
             { id: 2, name: "روغن جامد", price: 95000, icon: "🏺" },
             { id: 3, name: "شیر تازه", price: 28000, icon: "🥛" },
@@ -201,9 +278,9 @@
             { id: 10, name: "تخم مرغ ۳۰ عددی", price: 115000, icon: "🥚" }
         ];
 
-        // تولید خودکار تا ۵۰ محصول
+        // تولید محصولات تا ۵۰ عدد
         for(let i=11; i<=50; i++) {
-            items.push({
+            products.push({
                 id: i,
                 name: "کالای لوکس شماره " + i,
                 price: 50000 + (i * 2000),
@@ -213,42 +290,95 @@
 
         let currentPage = 1;
         const itemsPerPage = 10;
-        let cartTotal = 0;
+        let cart = JSON.parse(localStorage.getItem('amirCart')) || [];
 
-        // ۲. تابع نمایش محصولات
         function render(page) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             const start = (page - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            const pageItems = items.slice(start, end);
+            const pageItems = products.slice(start, end);
 
             pageItems.forEach(p => {
                 grid.innerHTML += `
-                    <div class="product-card">
+                    <div class="product-card animate__animated animate__fadeIn">
                         <span class="product-icon">${p.icon}</span>
                         <h3>${p.name}</h3>
                         <p class="price">${p.price.toLocaleString()} تومان</p>
-                        <p style="font-size: 11px; color: green;">ارسال و بسته‌بندی رایگان</p>
-                        <button class="add-btn" onclick="addToCart(${p.price})">افزودن به سبد</button>
+                        <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
                     </div>
                 `;
             });
             renderPagination();
         }
 
-        // ۳. صفحه‌بندی
         function renderPagination() {
             const pDiv = document.getElementById('pagination');
             pDiv.innerHTML = "";
-            const totalPages = Math.ceil(items.length / itemsPerPage);
-
+            const totalPages = Math.ceil(products.length / itemsPerPage);
             for(let i=1; i<=totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.innerText = i;
                 if(i === currentPage) btn.className = "active";
                 btn.onclick = () => { currentPage = i; render(i); window.scrollTo(0,0); };
                 pDiv.appendChild(btn);
+            }
+        }
+
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            const found = cart.find(c => c.id === id);
+            if(found) { found.qty++; } else { cart.push({...item, qty: 1}); }
+            localStorage.setItem('amirCart', JSON.stringify(cart));
+            updateCartUI();
+            
+            // نمایش پیام ساده
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "اضافه شد ✅";
+            setTimeout(() => btn.innerText = originalText, 1000);
+        }
+
+        function updateCartUI() {
+            let total = 0;
+            cart.forEach(c => total += (c.price * c.qty));
+            document.getElementById('cartStatus').innerHTML = `
+                <a href="cart.html">🛒 سبد خرید: ${total.toLocaleString()} تومان</a>
+            `;
+        }
+
+        function doSearch() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const grid = document.getElementById('productGrid');
+            if(val.length < 1) { render(1); return; }
+            const filtered = products.filter(p => p.name.includes(val));
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <span class="product-icon">${p.icon}</span>
+                    <h3>${p.name}</h3>
+                    <p class="price">${p.price.toLocaleString()} تومان</p>
+                    <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
+                </div>
+            `).join('');
+        }
+
+        // رفع مشکل گیر کردن لودینگ
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                render(1);
+                updateCartUI();
+            }, 1500);
+        });
+
+        // پشتیبان: اگر لودینگ بعد از ۵ ثانیه نرفت، دستی حذفش کن
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            if(loader) loader.style.display = 'none';
+        }, 5000);
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
