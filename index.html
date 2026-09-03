@@ -23,10 +23,11 @@
         * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
         body { margin: 0; background: var(--bg); color: var(--dark-blue); overflow-x: hidden; }
 
-        /* لودینگ پیشرفته مدل گوگل پلی */
+        /* لودینگ مدل گوگل پلی */
         #loader-wrapper {
             position: fixed; inset: 0; background: #fff; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
         }
         .play-loader {
             width: 80px; height: 80px; position: relative;
@@ -50,7 +51,6 @@
         .loader-text h1 { color: var(--dark-blue); margin: 0; font-size: 24px; }
         .loader-text p { color: #666; margin: 5px 0; font-size: 14px; }
 
-        /* هدر سلطنتی */
         header {
             background: var(--dark-blue); color: var(--gold);
             padding: 15px 5%; position: sticky; top: 0; z-index: 1000;
@@ -71,7 +71,6 @@
             font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 10px;
         }
 
-        /* گرید محصولات */
         .container { padding: 40px 5%; }
         .product-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;
@@ -80,7 +79,6 @@
             background: #fff; border-radius: 20px; padding: 20px;
             border: 1px solid #eee; text-align: center; transition: 0.3s;
         }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-color: var(--gold); }
         .card img { width: 100%; height: 220px; object-fit: contain; }
         .card h3 { font-size: 1.1rem; height: 50px; margin: 15px 0; }
         .price { font-size: 1.4rem; font-weight: 900; color: var(--dark-blue); display: block; margin-bottom: 20px; }
@@ -91,7 +89,6 @@
             font-weight: bold; font-size: 1rem;
         }
 
-        /* سبد خرید */
         .page { display: none; }
         .active { display: block; }
         .cart-item {
@@ -106,7 +103,7 @@
 </head>
 <body>
 
-    <!-- لودینگ مدل گوگل پلی -->
+    <!-- لودینگ گوگل پلی -->
     <div id="loader-wrapper">
         <div class="play-loader">
             <div class="blue"></div>
@@ -128,7 +125,7 @@
             </div>
             <div class="search-box">
                 <i class="fa fa-search"></i>
-                <input type="text" id="searchInput" placeholder="جستجو در بین ۵۰،۰۰۰ کالا..." onkeyup="search()">
+                <input type="text" id="searchInput" placeholder="جستجو..." onkeyup="search()">
             </div>
             <a href="#" class="cart-btn" onclick="showPage('cart')">
                 <i class="fa fa-shopping-cart"></i>
@@ -137,63 +134,57 @@
         </div>
     </header>
 
-    <!-- فروشگاه -->
     <main id="shop" class="page active">
         <div class="container">
-            <h2 style="border-right: 5px solid var(--gold); padding-right: 15px; margin-bottom: 30px;">کالاهای اساسی و تازه</h2>
             <div class="product-grid" id="productGrid"></div>
         </div>
     </main>
 
-    <!-- سبد خرید -->
     <div id="cart" class="page container">
-        <h2 style="margin-bottom: 30px;"><i class="fa fa-shopping-basket"></i> سبد خرید شما</h2>
+        <h2>سبد خرید شما</h2>
         <div id="cartList"></div>
         <div id="cartSummary" style="background:var(--dark-blue); color:var(--gold); padding:30px; border-radius:20px; text-align:center; margin-top:30px;">
-            <h3 style="font-size: 2rem;">جمع کل فاکتور: <span id="final-price">۰</span> تومان</h3>
-            <p>ارسال رایگان برای شما مشتری ویژه امیر مارکت</p>
-            <button class="add-btn" style="background:var(--gold); color:var(--dark-blue); max-width:400px; margin-top:20px;" onclick="connectToMellat()">اتصال مستقیم به درگاه بانک ملت</button>
+            <h3>جمع کل: <span id="final-price">۰</span> تومان</h3>
+            <button class="add-btn" style="background:var(--gold); color:var(--dark-blue); max-width:400px; margin-top:20px;" onclick="connectToMellat()">اتصال به درگاه بانک ملت</button>
         </div>
     </div>
 
     <footer>
         <p>امیر مارکت - بزرگترین پلتفرم توزیع کالای کشور</p>
-        <p style="opacity: 0.6; font-size: 12px;">کدنویسی شده برای سیستم توزیع هوشمند</p>
     </footer>
 
     <script>
-        // دیتابیس محصولات با عکس‌های دقیق و واقعی
         const products = [
-            { id: 1, name: "روغن مایع آفتابگردان لادن ۸۱۰ گرم", price: 198500, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
-            { id: 2, name: "برنج طارم هاشمی درجه یک ۱۰ کیلوگرم", price: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
-            { id: 3, name: "چای عطری احمد ۵۰۰ گرمی", price: 285000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
-            { id: 4, name: "پنیر سفید ۹۰۰ گرمی میهن", price: 115000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
-            { id: 5, name: "زعفران یک مثقالی قائنات درجه یک", price: 540000, img: "https://dkstatics-public.digikala.com/digikala-products/111326.jpg" },
-            { id: 6, name: "رب گوجه فرنگی ۸۰۰ گرمی طبیعت", price: 49500, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
-            { id: 7, name: "شکر ۵ کیلوگرمی سفید", price: 235000, img: "https://dkstatics-public.digikala.com/digikala-products/3440786.jpg" },
-            { id: 8, name: "ماکارونی زرماکارون ۷۰۰ گرمی", price: 27000, img: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" }
+            { id: 1, name: "روغن مایع لادن", price: 198500, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
+            { id: 2, name: "برنج طارم ۱۰ کیلو", price: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
+            { id: 3, name: "چای احمد ۵۰۰ گرم", price: 285000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
+            { id: 4, name: "پنیر میهن ۹۰۰ گرم", price: 115000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
+            { id: 5, name: "زعفران قائنات", price: 540000, img: "https://dkstatics-public.digikala.com/digikala-products/111326.jpg" },
+            { id: 6, name: "رب طبیعت", price: 49500, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" }
         ];
 
         let cart = JSON.parse(localStorage.getItem('amirCart')) || [];
 
-        // مدیریت لودینگ گوگل پلی
-        window.addEventListener('load', () => {
+        // اصلاح لودینگ برای بالا آمدن سریع سایت
+        function hideLoader() {
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('loader-wrapper').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader-wrapper').style.display = 'none', 500);
-            }, 2500); // زمان لودینگ
-            renderProducts(products);
-            updateCartUI();
-        });
+                loader.style.display = 'none';
+            }, 500);
+        }
+
+        // سایت را بعد از ۲ ثانیه حتماً نشان بده (حتی اگر عکس‌ها لود نشوند)
+        setTimeout(hideLoader, 2000);
 
         function renderProducts(items) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = items.map(p => `
                 <div class="card">
-                    <img src="${p.img}" alt="${p.name}">
+                    <img src="${p.img}">
                     <h3>${p.name}</h3>
                     <span class="price">${p.price.toLocaleString()} تومان</span>
-                    <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد خرید</button>
+                    <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
                 </div>
             `).join('');
         }
@@ -239,9 +230,9 @@
                         <img src="${item.img}" width="80">
                         <div style="flex:1; margin-right: 20px;">
                             <strong>${item.name}</strong><br>
-                            <span>${item.qty} عدد × ${item.price.toLocaleString()} تومان</span>
+                            <span>${item.qty} عدد × ${item.price.toLocaleString()}</span>
                         </div>
-                        <button class="delete-btn" onclick="remove(${idx})"><i class="fa fa-trash-can"></i></button>
+                        <button class="delete-btn" onclick="remove(${idx})">❌</button>
                     </div>
                 `;
             }).join('');
@@ -258,25 +249,15 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(id === 'cart') renderCart();
-            window.scrollTo(0,0);
         }
 
-        // شبیه‌ساز اتصال به بانک ملت (Behpardakht)
         function connectToMellat() {
-            const total = document.getElementById('final-price').innerText;
-            alert(`در حال فراخوانی وب‌سرویس بانک ملت...\nمبلغ تراکنش: ${total} تومان\nلطفا شکیبا باشید...`);
-            
-            // در دنیای واقعی، اینجا یک فرم مخفی به سمت https://bpm.shaparak.ir/pgwchannel/startpay.mellat ارسال می‌شود
-            setTimeout(() => {
-                const confirmed = confirm("آیا پرداخت در درگاه به پرداخت ملت با موفقیت انجام شد؟");
-                if(confirmed) {
-                    alert("تاییدیه بانکی دریافت شد. شماره پیگیری: " + Math.floor(Math.random()*9000000));
-                    cart = [];
-                    save();
-                    showPage('shop');
-                }
-            }, 2000);
+            alert("در حال اتصال به درگاه ملت...");
         }
+
+        // اجرای اولیه محصولات
+        renderProducts(products);
+        updateCartUI();
     </script>
 </body>
 </html>
