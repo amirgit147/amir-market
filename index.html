@@ -8,351 +8,266 @@
     <!-- فونت و آیکون‌ها -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         :root {
-            --dark-blue: #001f3f;
+            --dark-blue: #001529;
             --gold: #D4AF37;
-            --soft-gold: #f1d279;
             --white: #ffffff;
-            --bg: #f4f4f4;
-            --card-bg: #ffffff;
-            --text: #001f3f;
+            --bg: #f0f2f5;
         }
 
-        [data-theme="dark"] {
-            --bg: #000b16;
-            --card-bg: #00152b;
-            --text: #ffffff;
-            --white: #001f3f;
-        }
-
-        * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; transition: all 0.3s ease; }
+        * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
         
-        body { margin: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { margin: 0; background-color: var(--bg); color: var(--dark-blue); overflow-x: hidden; }
 
-        /* لودینگ سبک گوگل کروم */
-        #loader {
-            position: fixed; inset: 0; background: var(--dark-blue); z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        /* لودینگ مشابه نسخه جدید گوگل کروم */
+        #loader-wrapper {
+            position: fixed; inset: 0; background: #ffffff; z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
         }
-        .chrome-dots { display: flex; gap: 10px; }
-        .dot { width: 15px; height: 15px; border-radius: 50%; animation: chrome-bounce 1.5s infinite; }
-        .dot:nth-child(1) { background: #4285F4; animation-delay: 0s; }
-        .dot:nth-child(2) { background: #EA4335; animation-delay: 0.2s; }
-        .dot:nth-child(3) { background: #FBBC05; animation-delay: 0.4s; }
-        .dot:nth-child(4) { background: #34A853; animation-delay: 0.6s; }
-        @keyframes chrome-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .chrome-spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4285f4; /* آبی معروف گوگل */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-        /* هدر فوق لوکس */
+        /* هدر لوکس */
         header {
             background: var(--dark-blue); color: var(--gold);
             padding: 15px 5%; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3); border-bottom: 2px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .logo-section h1 { margin: 0; font-size: 1.8rem; font-weight: 900; letter-spacing: 1px; }
-        .logo-section small { color: var(--soft-gold); opacity: 0.8; }
-
-        /* نوار جستجوی قدرتمند */
-        .search-container {
-            position: relative; max-width: 600px; width: 100%; margin: 15px auto 0;
+        .header-main { display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { margin: 0; font-size: 1.6rem; font-weight: 900; }
+        
+        /* موتور جستجوی هوشمند */
+        .search-box {
+            position: relative; flex-grow: 1; max-width: 500px; margin: 0 30px;
         }
-        .search-container input {
-            width: 100%; padding: 12px 25px; padding-right: 50px;
-            border-radius: 50px; border: 2px solid var(--gold);
-            background: rgba(255,255,255,0.1); color: #fff; outline: none; font-size: 1rem;
+        .search-box input {
+            width: 100%; padding: 12px 45px 12px 20px; border-radius: 30px;
+            border: none; background: rgba(255,255,255,0.15); color: #fff;
+            outline: none; font-size: 0.95rem;
         }
-        .search-container i { position: absolute; right: 20px; top: 15px; color: var(--gold); font-size: 1.2rem; }
+        .search-box input::placeholder { color: #ccc; }
+        .search-box i { position: absolute; right: 15px; top: 13px; color: var(--gold); }
 
-        .header-icons { display: flex; gap: 20px; align-items: center; }
-        .btn-icon { background: none; border: none; color: var(--gold); cursor: pointer; font-size: 1.4rem; position: relative; }
-        .cart-count { position: absolute; top: -10px; left: -10px; background: red; color: white; font-size: 12px; padding: 2px 7px; border-radius: 50%; border: 2px solid var(--dark-blue); }
+        .cart-btn {
+            background: var(--gold); color: var(--dark-blue);
+            padding: 10px 20px; border-radius: 12px; cursor: pointer;
+            font-weight: bold; display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+        }
 
-        /* کارت محصولات */
-        .main-container { padding: 40px 5%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
+        /* گرید محصولات */
+        .container { padding: 40px 5%; }
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px;
+        }
         .product-card {
-            background: var(--card-bg); border-radius: 20px; padding: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative;
+            background: white; border-radius: 15px; padding: 15px;
+            border: 1px solid #eee; transition: 0.3s; text-align: center;
         }
-        .product-card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.2); }
-        .product-card img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 10px; }
-        .product-card h3 { margin: 10px 0; font-size: 1.1rem; height: 50px; overflow: hidden; }
-        .price-tag { color: var(--gold); font-weight: 900; font-size: 1.3rem; margin: 15px 0; display: block; }
-        
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 200px; object-fit: contain; border-radius: 10px; }
+        .product-card h3 { font-size: 1rem; margin: 15px 0; color: #333; height: 45px; overflow: hidden; }
+        .price { font-size: 1.3rem; font-weight: 900; color: var(--dark-blue); margin-bottom: 15px; display: block; }
+
         .add-btn {
-            background: var(--dark-blue); color: var(--gold); border: 2px solid var(--gold);
-            width: 100%; padding: 12px; border-radius: 15px; cursor: pointer; font-weight: bold;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            background: var(--dark-blue); color: var(--gold); border: none;
+            width: 100%; padding: 12px; border-radius: 10px; cursor: pointer;
+            font-weight: bold; transition: 0.2s;
         }
-        .add-btn:hover { background: var(--gold); color: var(--dark-blue); }
+        .add-btn:hover { background: #002a52; transform: scale(1.02); }
 
-        /* صفحات سبد و پروفایل */
-        .page { display: none; padding: 40px 5%; min-height: 80vh; }
-        .page.active { display: block; animation: fadeIn 0.5s; }
+        /* صفحات مجازی */
+        .page { display: none; }
+        .page.active { display: block; }
 
-        /* استایل سبد خرید */
+        /* سبد خرید */
         .cart-item {
-            background: var(--card-bg); border: 1px solid var(--gold); padding: 20px;
-            border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .total-box {
-            background: var(--dark-blue); color: var(--gold); padding: 30px;
-            border-radius: 20px; text-align: center; border: 2px solid var(--gold);
+            background: white; padding: 15px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
 
-        /* فوتر */
-        footer { background: var(--dark-blue); color: var(--white); padding: 50px 5%; margin-top: 50px; border-top: 4px solid var(--gold); }
-        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        footer { background: var(--dark-blue); color: var(--white); padding: 40px 5%; text-align: center; margin-top: 50px; }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
-<!-- لودینگ مدل گوگل کروم -->
-<div id="loader">
-    <div class="chrome-dots">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+    <!-- لودینگ کرومی -->
+    <div id="loader-wrapper">
+        <div class="chrome-spinner"></div>
     </div>
-    <h1 style="color: var(--gold); margin-top: 30px; letter-spacing: 3px;">AMIR MARKET</h1>
-    <p style="color: #fff; opacity: 0.7;">بزرگترین هایپر مارکت کشور</p>
-</div>
 
-<!-- هدر لوکس -->
-<header>
-    <div class="header-top">
-        <div class="logo-section" onclick="showPage('shop')" style="cursor:pointer">
-            <h1>امیر مارکت</h1>
-            <small>بزرگترین و مجهزترین در کشور</small>
-        </div>
-        <div class="header-icons">
-            <button class="btn-icon" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-            <button class="btn-icon" onclick="showPage('profile')"><i class="fas fa-user-circle"></i></button>
-            <button class="btn-icon" onclick="showPage('cart')">
-                <i class="fas fa-shopping-bag"></i>
-                <span class="cart-count" id="cart-count">۰</span>
-            </button>
-        </div>
-    </div>
-    <div class="search-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="جستجو در کالاهای امیر مارکت..." onkeyup="smartSearch()">
-    </div>
-</header>
+    <header>
+        <div class="header-main">
+            <div class="logo" onclick="showPage('shop')" style="cursor:pointer">
+                <h1>امیر مارکت</h1>
+                <small style="color:var(--gold)">بزرگترین هایپر مارکت کشور</small>
+            </div>
 
-<!-- صفحه فروشگاه -->
-<main id="shop" class="page active">
-    <h2 style="border-right: 5px solid var(--gold); padding-right: 15px; margin-bottom: 30px;">کالاهای اساسی روز</h2>
-    <div class="grid" id="productGrid"></div>
-</main>
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" id="searchInput" placeholder="جستجو در بین کالاهای اساسی..." onkeyup="filterProducts()">
+            </div>
 
-<!-- صفحه سبد خرید -->
-<div id="cart" class="page">
-    <h2 style="color: var(--gold)"><i class="fas fa-shopping-cart"></i> سبد خرید شما</h2>
-    <div id="cartList"></div>
-    <div id="cartEmpty" style="text-align:center; padding:50px; display:none;">
-        <i class="fas fa-shopping-basket" style="font-size: 5rem; color: var(--gold); opacity: 0.3;"></i>
-        <h3>سبد خرید شما فعلاً خالی است!</h3>
-    </div>
-    <div id="cartSummary" class="total-box">
-        <h3>جمع کل فاکتور: <span id="totalPrice">۰</span> تومان</h3>
-        <button class="add-btn" style="max-width: 300px; margin: 20px auto;" onclick="checkout()">تایید و پرداخت آنلاین</button>
-    </div>
-</div>
-
-<!-- صفحه پروفایل / ورود -->
-<div id="profile" class="page">
-    <div style="max-width: 500px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 30px; border: 2px solid var(--gold); text-align: center;">
-        <i class="fas fa-user-shield" style="font-size: 4rem; color: var(--gold);"></i>
-        <h2 id="userTitle">ورود به حساب کاربری</h2>
-        <input type="text" id="phone" placeholder="شماره موبایل" style="width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--gold);">
-        <button class="add-btn" onclick="login()">ورود به امیر مارکت</button>
-    </div>
-</div>
-
-<footer>
-    <div class="footer-content">
-        <div>
-            <h3>درباره امیر مارکت</h3>
-            <p>امیر مارکت به عنوان بزرگترین هایپر مارکت کشور، تضمین‌کننده بهترین قیمت و بالاترین کیفیت در تمامی کالاهاست.</p>
-        </div>
-        <div>
-            <h3>تماس با ما</h3>
-            <p><i class="fas fa-phone"></i> ۰۲۱-۱۲۳۴۵۶۷۸</p>
-            <p><i class="fas fa-map-marker-alt"></i> تهران، جاده مخصوص، شعبه مرکزی امیر مارکت</p>
-        </div>
-        <div>
-            <h3>نمادهای اعتماد</h3>
-            <div style="display:flex; gap:10px; font-size: 2rem;">
-                <i class="fab fa-cc-visa"></i>
-                <i class="fab fa-cc-mastercard"></i>
-                <i class="fas fa-shield-alt"></i>
+            <div class="header-actions">
+                <a href="#" class="cart-btn" onclick="showPage('cart')">
+                    <i class="fa fa-shopping-basket"></i>
+                    <span id="cart-count">۰</span> کالا
+                </a>
             </div>
         </div>
-    </div>
-    <div style="text-align:center; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-        تمامی حقوق برای امیر مارکت محفوظ است © ۲۰۲۴
-    </div>
-</footer>
+    </header>
 
-<script>
-    // محصولات با عکس‌های واقعی و قیمت روز
-    const products = [
-        { id: 1, name: "روغن مایع آفتابگردان لادن - ۸۱۰ گرم", price: 198000, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
-        { id: 2, name: "برنج طارم هاشمی درجه یک - ۱۰ کیلوگرم", price: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
-        { id: 3, name: "زعفران تمام قائنات - ۴.۶ گرم (یک مثقال)", price: 485000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
-        { id: 4, name: "چای عطری احمد - ۵۰۰ گرم", price: 245000, img: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" },
-        { id: 5, name: "پنیر سفید نسبی میهن - ۴۰۰ گرم", price: 58000, img: "https://dkstatics-public.digikala.com/digikala-products/3440786.jpg" },
-        { id: 6, name: "ماکارونی ۷۰۰ گرمی زر ماکارون", price: 27500, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
-        { id: 7, name: "شکر سفید ۵ کیلوگرمی", price: 210000, img: "https://cdn-icons-png.flaticon.com/512/5029/5029255.png" },
-        { id: 8, name: "شوینده ظرفپاشی پریل - ۳.۷۵ لیتر", price: 185000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" }
-    ];
-
-    let cart = JSON.parse(localStorage.getItem('amir_market_cart')) || [];
-
-    // لودینگ هوشمند
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-            renderProducts(products);
-            updateCartUI();
-        }, 2000);
-    };
-
-    // موتور جستجوی هوشمند
-    function smartSearch() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p => p.name.includes(query));
-        renderProducts(filtered);
-    }
-
-    // رندر محصولات
-    function renderProducts(items) {
-        const grid = document.getElementById('productGrid');
-        if (items.length === 0) {
-            grid.innerHTML = `<h3 style="grid-column: 1/-1; text-align:center;">متاسفانه کالایی پیدا نشد!</h3>`;
-            return;
-        }
-        grid.innerHTML = items.map(p => `
-            <div class="product-card animate__animated animate__fadeInUp">
-                <img src="${p.img}" alt="${p.name}">
-                <h3>${p.name}</h3>
-                <span class="price-tag">${p.price.toLocaleString()} تومان</span>
-                <button class="add-btn" onclick="addToCart(${p.id})">
-                    <i class="fas fa-plus"></i> افزودن به سبد
-                </button>
+    <!-- صفحه فروشگاه -->
+    <main id="shop" class="page active">
+        <div class="container">
+            <h2 style="margin-bottom: 30px; border-right: 4px solid var(--gold); padding-right: 15px;">کالاهای منتخب امیر مارکت</h2>
+            <div class="grid" id="productGrid">
+                <!-- محصولات با جاوااسکریپت تزریق می‌شوند -->
             </div>
-        `).join('');
-    }
+        </div>
+    </main>
 
-    // مدیریت سبد خرید
-    function addToCart(id) {
-        const p = products.find(x => x.id === id);
-        const exist = cart.find(x => x.id === id);
-        if(exist) exist.qty++; else cart.push({...p, qty: 1});
-        saveCart();
-        // انیمیشن کوچک برای سبد
-        const icon = document.querySelector('.fa-shopping-bag');
-        icon.classList.add('animate__animated', 'animate__rubberBand');
-        setTimeout(() => icon.classList.remove('animate__animated', 'animate__rubberBand'), 1000);
-    }
+    <!-- صفحه سبد خرید -->
+    <div id="cart" class="page container">
+        <h2><i class="fa fa-shopping-cart"></i> سبد خرید شما</h2>
+        <div id="cartList"></div>
+        <div id="cartTotal" style="background:var(--dark-blue); color:var(--gold); padding:25px; border-radius:15px; margin-top:20px; text-align:center;">
+            <h3>جمع کل فاکتور: <span id="final-price">۰</span> تومان</h3>
+            <button class="add-btn" style="max-width:300px; background:var(--gold); color:var(--dark-blue);" onclick="checkout()">تکمیل خرید و پرداخت</button>
+        </div>
+        <p onclick="showPage('shop')" style="text-align:center; cursor:pointer; margin-top:20px;">بازگشت به فروشگاه</p>
+    </div>
 
-    function saveCart() {
-        localStorage.setItem('amir_market_cart', JSON.stringify(cart));
-        updateCartUI();
-    }
+    <footer>
+        <p>امیر مارکت - بزرگترین هایپر مارکت کشور</p>
+        <div style="font-size: 1.5rem; gap: 20px; display: flex; justify-content: center;">
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-telegram"></i>
+            <i class="fa fa-phone"></i>
+        </div>
+    </footer>
 
-    function updateCartUI() {
-        const count = cart.reduce((acc, item) => acc + item.qty, 0);
-        document.getElementById('cart-count').innerText = count;
-    }
+    <script>
+        // دیتابیس محصولات با عکس‌های واقعی
+        const allProducts = [
+            { id: 1, name: "روغن مایع آفتابگردان لادن ۸۱۰ گرم", price: 198000, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 2, name: "برنج طارم هاشمی درجه یک ۱۰ کیلوگرم", price: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 3, name: "پنیر سفید ۹۰۰ گرمی میهن", price: 112000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 4, name: "شیر پرچرب ۱ لیتری کاله", price: 32000, img: "https://dkstatics-public.digikala.com/digikala-products/3440786.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 5, name: "رب گوجه فرنگی ۸۰۰ گرمی طبیعت", price: 48000, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 6, name: "ماکارونی ۷۰۰ گرمی زرماکارون", price: 27000, img: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 7, name: "چای عطری ۵۰۰ گرمی احمد", price: 285000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" },
+            { id: 8, name: "قند شکسته ۵ کیلوگرمی", price: 220000, img: "https://dkstatics-public.digikala.com/digikala-products/111326.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80" }
+        ];
 
-    function renderCart() {
-        const list = document.getElementById('cartList');
-        const summary = document.getElementById('cartSummary');
-        const empty = document.getElementById('cartEmpty');
-        
-        if (cart.length === 0) {
-            list.innerHTML = "";
-            summary.style.display = "none";
-            empty.style.display = "block";
-            return;
-        }
+        let cart = JSON.parse(localStorage.getItem('amirCart')) || [];
 
-        empty.style.display = "none";
-        summary.style.display = "block";
-        let total = 0;
-        
-        list.innerHTML = cart.map((item, idx) => {
-            total += (item.price * item.qty);
-            return `
-                <div class="cart-item animate__animated animate__fadeInLeft">
-                    <img src="${item.img}" width="70" style="border-radius:10px;">
-                    <div style="flex-grow:1; margin: 0 20px;">
-                        <strong>${item.name}</strong><br>
-                        <small>${item.price.toLocaleString()} × ${item.qty}</small>
-                    </div>
-                    <div style="font-weight:bold; color:var(--gold);">${(item.price * item.qty).toLocaleString()} تومان</div>
-                    <button onclick="remove(${idx})" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem; margin-right:20px;">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        // مدیریت لودینگ کرومی
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader-wrapper');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1000); // ۱ ثانیه مکث برای نمایش لودینگ
+            renderProducts(allProducts);
+            updateCartIcon();
+        });
+
+        // نمایش محصولات
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = items.map(p => `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <span class="price">${p.price.toLocaleString()} تومان</span>
+                    <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
                 </div>
-            `;
-        }).join('');
-        document.getElementById('totalPrice').innerText = total.toLocaleString();
-    }
-
-    function remove(idx) {
-        cart.splice(idx, 1);
-        saveCart();
-        renderCart();
-    }
-
-    // مدیریت صفحات
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(id === 'cart') renderCart();
-        window.scrollTo(0,0);
-    }
-
-    // تم دارک لوکس
-    function toggleTheme() {
-        const body = document.body;
-        const icon = document.querySelector('.btn-icon i');
-        if (body.getAttribute('data-theme') === 'light') {
-            body.setAttribute('data-theme', 'dark');
-            icon.className = 'fas fa-sun';
-        } else {
-            body.setAttribute('data-theme', 'light');
-            icon.className = 'fas fa-moon';
+            `).join('');
         }
-    }
 
-    function login() {
-        const phone = document.getElementById('phone').value;
-        if(phone.length < 11) return alert("لطفا شماره موبایل معتبر وارد کنید");
-        document.getElementById('userTitle').innerText = "خوش آمدید، امیر عزیز!";
-        alert("ورود موفقیت‌آمیز بود. به بزرگترین هایپر مارکت کشور خوش آمدید!");
-        showPage('shop');
-    }
+        // موتور جستجو
+        function filterProducts() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProducts.filter(p => p.name.includes(term));
+            renderProducts(filtered);
+        }
 
-    function checkout() {
-        alert("در حال انتقال به درگاه بانکی شاپرک...");
-        cart = [];
-        saveCart();
-        showPage('shop');
-        alert("پرداخت موفق! سفارش شما با پیک اکسپرس امیر مارکت ارسال شد.");
-    }
-</script>
+        // مدیریت سبد خرید
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
+            const inCart = cart.find(item => item.id === id);
+            if(inCart) inCart.qty++; else cart.push({...product, qty: 1});
+            saveCart();
+            alert(`${product.name} به سبد اضافه شد`);
+        }
 
+        function saveCart() {
+            localStorage.setItem('amirCart', JSON.stringify(cart));
+            updateCartIcon();
+        }
+
+        function updateCartIcon() {
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById('cart-count').innerText = count;
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            if(cart.length === 0) {
+                list.innerHTML = "<h4>سبد خرید شما خالی است</h4>";
+                document.getElementById('cartTotal').style.display = 'none';
+                return;
+            }
+            document.getElementById('cartTotal').style.display = 'block';
+            let total = 0;
+            list.innerHTML = cart.map((item, idx) => {
+                total += item.price * item.qty;
+                return `
+                    <div class="cart-item">
+                        <img src="${item.img}" width="60">
+                        <div style="flex-grow:1; margin-right:15px;">
+                            <strong>${item.name}</strong><br>
+                            <small>${item.qty} عدد × ${item.price.toLocaleString()}</small>
+                        </div>
+                        <button onclick="remove(${idx})" style="border:none; background:none; color:red; cursor:pointer;"><i class="fa fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('final-price').innerText = total.toLocaleString();
+        }
+
+        function remove(idx) {
+            cart.splice(idx, 1);
+            saveCart();
+            renderCart();
+        }
+
+        // تغییر صفحه
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(pageId === 'cart') renderCart();
+        }
+
+        function checkout() {
+            alert("در حال انتقال به درگاه ایمن پرداخت... با تشکر از خرید شما از امیر مارکت");
+            cart = [];
+            saveCart();
+            showPage('shop');
+        }
+    </script>
 </body>
 </html>
