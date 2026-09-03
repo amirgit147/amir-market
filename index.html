@@ -3,138 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت</title>
+    <title>امیر مارکت | اسنپ استایل</title>
     <style>
-        /* استایل پایه فوق سریع */
-        :root { --p: #008eb2; --bg: #f5f5f5; }
-        * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
-        body { margin: 0; background: var(--bg); overflow-x: hidden; padding-bottom: 60px; }
+        /* استایل فوق سریع سیستمی */
+        :root { --blue: #008eb2; --bg: #f2f2f2; }
+        * { box-sizing: border-box; font-family: Tahoma, sans-serif; }
+        body { margin: 0; background: var(--bg); padding-bottom: 70px; visibility: hidden; } /* مخفی تا لحظه لود */
 
-        /* لودینگ حبابی - اجرای آنی با CSS */
-        #l { position: fixed; inset: 0; background: #0b141a; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.2s; }
-        .b { width: 80px; height: 80px; background: #7dbbff; border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; animation: a 1.5s infinite alternate; }
-        @keyframes a { to { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; transform: scale(1.1); } }
-        .t { color: white; margin-top: 20px; text-align: center; }
+        /* لودینگ حبابی - کاملا آفلاین و سریع */
+        #loading-screen { 
+            position: fixed; inset: 0; background: #0b141a; z-index: 10000; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; visibility: visible;
+        }
+        .blob {
+            width: 90px; height: 90px; background: #7dbbff; 
+            border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
+            animation: move 2s infinite alternate;
+            box-shadow: 0 0 30px rgba(125,187,255,0.3);
+        }
+        @keyframes move { to { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; transform: scale(1.1); } }
 
-        /* هدر فشرده */
-        h { background: #fff; padding: 10px; position: sticky; top: 0; z-index: 100; display: block; box-shadow: 0 2px 5px #0001; }
-        .s { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #f0f0f1; outline: none; margin-top: 5px; }
+        /* هدر اسنپ مارکتی */
+        header { background: #fff; padding: 10px 15px; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .search { width: 100%; padding: 12px; border: none; background: #f0f0f1; border-radius: 10px; margin-top: 10px; outline: none; }
 
         /* محصولات */
-        .c { padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-        .i { background: #fff; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; border: 1px solid #eee; }
-        .i img { width: 100%; height: 120px; object-fit: contain; }
-        .i h3 { font-size: 13px; height: 35px; margin: 5px 0; overflow: hidden; }
-        .pr { font-weight: bold; color: #000; font-size: 14px; }
-        .btn { background: #fff; color: var(--p); border: 1px solid var(--p); border-radius: 6px; padding: 5px 10px; cursor: pointer; float: left; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .card { background: #fff; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; position: relative; }
+        .card img { width: 100%; height: 130px; object-fit: contain; }
+        .card h3 { font-size: 12px; margin: 8px 0; height: 35px; overflow: hidden; color: #444; }
+        .price { font-weight: bold; font-size: 14px; }
+        .add-btn { position: absolute; bottom: 10px; left: 10px; border: 1px solid var(--blue); background: #fff; color: var(--blue); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         /* صفحات */
-        .p { display: none; padding: 10px; }
+        .page { display: none; padding: 15px; }
         .active { display: block; }
         
         /* منو پایین */
-        .m { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 8px; border-top: 1px solid #eee; }
-        .mi { text-align: center; font-size: 11px; color: #777; cursor: pointer; text-decoration: none; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px; border-top: 1px solid #ddd; }
+        .nav-item { text-align: center; font-size: 11px; color: #777; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="l"><div class="b"></div><div class="t"><b>امیر مارکت</b><br><small>در انتظار ورود...</small></div></div>
-
-<h>
-    <div style="display:flex; justify-content:space-between; color:var(--p); font-weight:bold">
-        <span onclick="v('sh')">AMIR MARKET</span>
-        <span onclick="v('ca')">🛒 <span id="cc">۰</span></span>
-    </div>
-    <input type="text" class="s" placeholder="جستجوی سریع..." onkeyup="sr(this.value)">
-</h>
-
-<div id="sh" class="p active"><div class="c" id="g"></div></div>
-
-<div id="ca" class="p">
-    <h3>سبد خرید</h3>
-    <div id="cl"></div>
-    <div id="sum" style="margin-top:20px; padding:15px; background:#fff; border-radius:10px">
-        جمع کل: <b id="tp">۰</b> تومان
-        <button onclick="alert('اتصال به بانک ملت...')" style="width:100%; background:var(--p); color:#fff; border:none; padding:12px; border-radius:8px; margin-top:10px">پرداخت نهایی</button>
+<!-- لودینگ ارسالی شما -->
+<div id="loading-screen">
+    <div class="blob"></div>
+    <div style="color:white; margin-top:20px; text-align:center;">
+        <b>امیر مارکت</b><br><small>در انتظار ورود...</small>
     </div>
 </div>
 
-<div class="m">
-    <div class="mi" onclick="v('sh')">🏠<br>ویترین</div>
-    <div class="mi" onclick="v('ca')">🛍️<br>سبد خرید</div>
+<header>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <b style="color:var(--blue); font-size:20px;">AMIR MARKET</b>
+        <div onclick="v('ca')" style="cursor:pointer">🛒 <span id="count">۰</span></div>
+    </div>
+    <input type="text" class="search" placeholder="جستجوی سریع..." onkeyup="sr(this.value)">
+</header>
+
+<div id="sh" class="page active"><div class="grid" id="g"></div></div>
+
+<div id="ca" class="page">
+    <h3>سبد خرید</h3>
+    <div id="list"></div>
+    <hr>
+    <div id="total-box" style="padding:10px; background:#fff; border-radius:10px; text-align:center;">
+        جمع کل: <b id="tp">۰</b> تومان
+        <button onclick="pay()" style="width:100%; background:var(--blue); color:#fff; border:none; padding:15px; border-radius:10px; margin-top:10px; font-weight:bold;">پرداخت آنلاین (ملت)</button>
+    </div>
+</div>
+
+<div class="nav">
+    <div class="nav-item" onclick="v('sh')">🏠<br>ویترین</div>
+    <div class="nav-item" onclick="v('ca')">🛍️<br>سبد خرید</div>
 </div>
 
 <script>
-    const data = [
-        { id: 1, n: "روغن لادن ۸۱۰ گرم", p: 198000, g: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
-        { id: 2, n: "برنج طارم ۱۰ کیلو", p: 1250000, g: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
-        { id: 3, n: "چای احمد ۵۰۰ گرم", p: 285000, g: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
-        { id: 4, n: "پنیر میهن ۹۰۰ گرم", p: 115000, g: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
-        { id: 5, n: "رب طبیعت ۸۰۰ گرم", p: 49500, g: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
-        { id: 6, n: "ماکارونی ۷۰۰ گرم زر", p: 27000, g: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" }
+    // اطلاعات دقیق محصولات با تصاویر منطبق
+    const products = [
+        { id: 1, n: "روغن مایع لادن ۸۱۰ گرم", p: 198000, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
+        { id: 2, n: "برنج طارم ۱۰ کیلوگرم", p: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
+        { id: 3, n: "چای احمد ۵۰۰ گرمی", p: 285000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
+        { id: 4, n: "پنیر میهن ۹۰۰ گرمی", p: 115000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
+        { id: 5, n: "رب گوجه طبیعت ۸۰۰ گرم", p: 49500, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
+        { id: 6, n: "ماکارونی ۷۰۰ گرمی زر", p: 27000, img: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" }
     ];
 
     let cart = [];
 
-    // لودینگ آنی (زیر ۰.۵ ثانیه)
-    window.onload = () => {
-        document.getElementById('l').style.opacity = '0';
-        setTimeout(() => document.getElementById('l').style.display = 'none', 200);
-        render(data);
-    };
+    // کد طلایی برای بالا آمدن سریع سایت
+    document.addEventListener("DOMContentLoaded", () => {
+        render(products);
+        // سایت را حتما در کمتر از ۱ ثانیه نمایش بده
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.body.style.visibility = 'visible';
+        }, 800); 
+    });
 
-    function render(items) {
-        document.getElementById('g').innerHTML = items.map(x => `
-            <div class="i">
-                <img src="${x.g}" loading="lazy">
+    function render(arr) {
+        document.getElementById('g').innerHTML = arr.map(x => `
+            <div class="card">
+                <img src="${x.img}" alt="${x.n}">
                 <h3>${x.n}</h3>
-                <div>
-                    <span class="pr">${x.p.toLocaleString()}</span>
-                    <button class="btn" onclick="add(${x.id})">+</button>
-                </div>
+                <div class="price">${x.p.toLocaleString()}</div>
+                <button class="add-btn" onclick="add(${x.id})">+</button>
             </div>
         `).join('');
     }
 
-    function sr(v) {
-        render(data.filter(x => x.n.includes(v)));
+    function add(id) {
+        const item = products.find(p => p.id === id);
+        cart.push(item);
+        document.getElementById('count').innerText = cart.length;
+        alert(item.n + " به سبد اضافه شد");
     }
 
-    function add(id) {
-        const item = data.find(x => x.id === id);
-        cart.push(item);
-        document.getElementById('cc').innerText = cart.length;
-        alert('اضافه شد');
+    function sr(val) {
+        const filtered = products.filter(p => p.n.includes(val));
+        render(filtered);
     }
 
     function v(id) {
-        document.querySelectorAll('.p').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'ca') rc();
+        if(id === 'ca') drawCart();
     }
 
-    function rc() {
-        const l = document.getElementById('cl');
-        if(!cart.length) { l.innerHTML = "خالی است"; return; }
-        let t = 0;
-        l.innerHTML = cart.map((x, i) => {
-            t += x.p;
-            return `<div style="background:#fff; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between">
+    function drawCart() {
+        const list = document.getElementById('list');
+        if(!cart.length) { list.innerHTML = "سبد خرید شما خالی است"; return; }
+        let total = 0;
+        list.innerHTML = cart.map((x, i) => {
+            total += x.p;
+            return `<div style="background:#fff; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between; border-radius:8px;">
                 <span>${x.n}</span>
                 <b>${x.p.toLocaleString()} <span onclick="del(${i})" style="color:red; cursor:pointer">🗑️</span></b>
             </div>`;
         }).join('');
-        document.getElementById('tp').innerText = t.toLocaleString();
+        document.getElementById('tp').innerText = total.toLocaleString();
     }
 
     function del(i) {
         cart.splice(i, 1);
-        document.getElementById('cc').innerText = cart.length;
-        rc();
+        document.getElementById('count').innerText = cart.length;
+        drawCart();
     }
 
-    function showPage(id) { v(id); }
+    function pay() {
+        alert("در حال اتصال مستقیم به درگاه بانک ملت...");
+    }
 </script>
 
 </body>
