@@ -5,430 +5,202 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>امیر مارکت | هایپرمارکت لوکس</title>
     
-    <!-- فونت اصیل و انیمیشن -->
+    <!-- فراخوانی منابع فقط یک بار -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        :root {
-            --dark-blue: #001f3f;
-            --gold: #D4AF37;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-            direction: rtl;
-        }
-
-        /* لودینگ خفن */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--dark-blue);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--gold);
-        }
-
-        .loader-circle {
-            width: 80px;
-            height: 80px;
-            border: 5px solid #003366;
-            border-top: 5px solid var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* هدر لوکس */
-        header {
-            background: var(--dark-blue);
-            color: var(--gold);
-            padding: 20px 5%;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            width: 100%;
-            margin: 15px auto 0;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 30px;
-            border: 2px solid var(--gold);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            outline: none;
-        }
-
-        .search-results {
-            position: absolute;
-            top: 50px;
-            width: 100%;
-            background: white;
-            border-radius: 10px;
-            color: #333;
-            max-height: 250px;
-            overflow-y: auto;
-            display: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        /* شبکه محصولات */
-        .container { padding: 20px 5%; }
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-            border: 1px solid #eee;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--gold);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .product-icon { font-size: 50px; margin-bottom: 15px; display: block; }
-
-        .price { font-weight: bold; color: var(--dark-blue); font-size: 1.2rem; }
-
-        .add-btn {
-            background: var(--dark-blue);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .add-btn:hover { background: var(--gold); color: var(--dark-blue); }
-
-        /* صفحه‌بندی */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 40px;
-        }
-
-        .pagination button {
-            background: white;
-            border: 1px solid var(--dark-blue);
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .pagination button.active {
-            background: var(--dark-blue);
-            color: var(--gold);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- صفحه لودینگ -->
-    <div id="loader">
-        <div class="loader-circle"></div>
-        <h1 style="margin-top: 20px;">امیر مارکت</h1>
-        <p>در حال آماده‌سازی بهترین هایپر مارکت کشور...</p>
-    </div>
-
-    <header>
-        <div class="top-bar">
-            <div>
-                <h1 style="margin: 0; font-size: 1.5rem;">امیر مارکت</h1>
-                <small>«بهترین هایپر مارکت در کشور»</small>
-            </div>
-            <div id="cartStatus">🛒 سبد خرید: ۰ تومان</div>
-        </div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="جستجوی ۵۰ محصول لوکس..." onkeyup="doSearch()">
-            <div id="searchResults" class="search-results"></div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div id="productGrid" class="product-grid"></div>
-        <div id="pagination" class="pagination"></div>
-    </div>
-
-    <script>
-    <!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت | هایپرمارکت لوکس</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-    <style>
-        :root { --dark-blue: #001f3f; --gold: #D4AF37; --white: #ffffff; }
-        body { font-family: 'Vazirmatn', sans-serif; margin: 0; background-color: #f4f4f4; direction: rtl; }
-
-        /* لودینگ */
-        #loader {
-            position: fixed; inset: 0; background: var(--dark-blue); z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--gold);
-        }
-        .loader-circle {
-            width: 80px; height: 80px; border: 5px solid #003366; border-top: 5px solid var(--gold);
-            border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        header { background: var(--dark-blue); color: var(--gold); padding: 20px 5%; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; }
-        
-        .search-container { position: relative; max-width: 500px; width: 100%; margin: 15px auto 0; }
-        .search-container input { width: 100%; padding: 12px 20px; border-radius: 30px; border: 2px solid var(--gold); background: rgba(255,255,255,0.1); color: white; outline: none; }
-
-        .container { padding: 20px 5%; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .product-card { background: white; border-radius: 15px; padding: 20px; text-align: center; transition: 0.3s; border: 1px solid #eee; }
-        .product-card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .product-icon { font-size: 50px; display: block; margin-bottom: 10px; }
-        .price { font-weight: bold; color: var(--dark-blue); font-size: 1.2rem; margin: 10px 0; }
-        
-        .add-btn { background: var(--dark-blue); color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; }
-        .add-btn:hover { background: var(--gold); color: var(--dark-blue); }
-
-        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 40px; }
-        .pagination button { background: white; border: 1px solid var(--dark-blue); padding: 8px 15px; cursor: pointer; border-radius: 5px; }
-        .pagination button.active { background: var(--dark-blue); color: var(--gold); }
-        
-        #cartStatus a { color: var(--gold); text-decoration: none; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div id="loader">
-        <div class="loader-circle"></div>
-        <h1 style="margin-top: 20px;">امیر مارکت</h1>
-        <p>در حال آماده‌سازی بهترین هایپر مارکت کشور...</p>
-    </div>
-
-    <header>
-        <div class="top-bar">
-            <div>
-                <h1 style="margin: 0; font-size: 1.5rem;">امیر مارکت</h1>
-                <small>«بهترین هایپر مارکت در کشور»</small>
-            </div>
-            <div id="cartStatus">
-                <a href="cart.html">🛒 سبد خرید: ۰ تومان</a>
-            </div>
-        </div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="جستجو در محصولات لوکس..." onkeyup="doSearch()">
-        </div>
-    </header>
-
-    <div class="container">
-        <div id="productGrid" class="product-grid"></div>
-        <div id="pagination" class="pagination"></div>
-    </div>
-
-    <script>
-   <!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت | هایپرمارکت لوکس</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
-    <style>
-        :root { --dark: #001f3f; --gold: #D4AF37; --white: #fff; }
+        :root { --dark: #001f3f; --gold: #D4AF37; --soft-gold: #f1d279; --white: #fff; }
         * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
-        body { margin: 0; background: #f4f4f4; overflow-x: hidden; }
+        body { margin: 0; background: #f4f4f4; color: var(--dark); overflow-x: hidden; }
 
-        /* هدر فوق سریع */
-        header { background: var(--dark); color: var(--gold); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .logo h1 { margin: 0; font-size: 1.4rem; }
-        .cart-btn { cursor: pointer; background: rgba(212,175,55,0.1); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--gold); transition: 0.2s; }
-        .cart-btn:hover { background: var(--gold); color: var(--dark); }
+        /* لودینگ هوشمند */
+        #loader { 
+            position: fixed; inset: 0; background: var(--dark); z-index: 9999; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--gold);
+            transition: opacity 0.5s;
+        }
+        .spinner { width: 50px; height: 50px; border: 5px solid #003366; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* مدیریت صفحات */
-        .page { display: none; padding: 20px 5%; animation: fadeIn 0.3s; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* هدر */
+        header { background: var(--dark); color: var(--gold); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .logo h1 { margin: 0; font-size: 1.5rem; cursor: pointer; }
+        .cart-status { cursor: pointer; background: rgba(212,175,55,0.1); padding: 8px 15px; border-radius: 25px; border: 1px solid var(--gold); transition: 0.3s; }
+        .cart-status:hover { background: var(--gold); color: var(--dark); }
 
-        /* محصولات */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .card { background: white; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #ddd; transition: 0.2s; }
-        .card:hover { border-color: var(--gold); transform: translateY(-3px); }
-        .icon { font-size: 40px; }
-        .price { color: var(--dark); font-weight: bold; margin: 10px 0; }
-        .add-btn { background: var(--dark); color: var(--gold); border: 1px solid var(--gold); width: 100%; padding: 7px; border-radius: 7px; cursor: pointer; }
+        /* بخش‌ها */
+        .page { display: none; padding: 20px 5%; min-height: 80vh; }
+        .page.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* سبد خرید و فرم‌ها */
-        .cart-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .login-box { max-width: 350px; margin: 50px auto; background: var(--dark); color: var(--gold); padding: 30px; border-radius: 20px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        .submit-btn { background: var(--gold); color: var(--dark); border: none; width: 100%; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        /* کارت محصول */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #eee; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--gold); }
+        .card .icon { font-size: 50px; margin-bottom: 10px; }
+        .add-btn { background: var(--dark); color: var(--gold); border: 1px solid var(--gold); width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .add-btn:hover { background: var(--gold); color: var(--dark); }
 
-        /* لودینگ لحظه‌ای */
-        #loader { position: fixed; inset: 0; background: var(--dark); z-index: 2000; display: flex; justify-content: center; align-items: center; color: var(--gold); transition: 0.3s; }
+        /* سبد خرید */
+        .cart-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .total-box { background: var(--dark); color: var(--gold); padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; }
+
+        /* فرم ورود */
+        .login-box { max-width: 400px; margin: 50px auto; background: var(--dark); color: white; padding: 40px; border-radius: 25px; text-align: center; border: 1px solid var(--gold); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--gold); background: rgba(255,255,255,0.1); color: white; }
+        .submit-btn { background: var(--gold); color: var(--dark); border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
 
-<div id="loader"><h1>امیر مارکت</h1></div>
+<!-- لودینگ سریع (بدون تایمر بیهوده) -->
+<div id="loader">
+    <div class="spinner"></div>
+    <h2 style="margin-top: 20px;">امیر مارکت</h2>
+</div>
 
 <header>
-    <div class="logo" onclick="showPage('shop')" style="cursor:pointer">
+    <div class="logo" onclick="showPage('shop-page')">
         <h1>امیر مارکت</h1>
-        <small>لوکس‌ترین در کشور</small>
+        <small>لوکس‌ترین هایپر کشور</small>
     </div>
-    <div class="cart-btn" onclick="showPage('cart')">
-        🛒 سبد: <span id="cart-total">۰</span> تومان
+    <div class="cart-status" onclick="showPage('cart-page')">
+        🛒 سبد خرید: <span id="cart-total">۰</span> تومان
     </div>
 </header>
 
 <!-- صفحه فروشگاه -->
-<main id="shop" class="page active">
+<main id="shop-page" class="page active">
     <div class="grid" id="product-grid"></div>
 </main>
 
 <!-- صفحه سبد خرید -->
-<div id="cart" class="page">
-    <h2 style="color:var(--dark)">سبد خرید شما</h2>
-    <div id="cart-list"></div>
-    <div id="total-price" style="background:var(--dark); color:var(--gold); padding:20px; border-radius:10px; margin-top:20px; text-align:center">
-        <h3>جمع کل: <span id="total-val">۰</span> تومان</h3>
-        <button class="submit-btn" onclick="showPage('login')">تایید و پرداخت</button>
+<div id="cart-page" class="page">
+    <h2>سبد خرید شما</h2>
+    <div id="cart-items-list"></div>
+    <div id="cart-empty-msg" style="text-align:center; padding:50px; display:none;"><h3>سبد خرید خالی است! 🛒</h3></div>
+    <div id="total-section" class="total-box">
+        <h3>جمع کل خرید: <span id="final-price">۰</span> تومان</h3>
+        <button class="submit-btn" onclick="showPage('login-page')">تکمیل فرآیند خرید</button>
     </div>
+    <p style="text-align:center; margin-top:20px; cursor:pointer; color:var(--dark);" onclick="showPage('shop-page')">← بازگشت به فروشگاه</p>
 </div>
 
 <!-- صفحه ورود -->
-<div id="login" class="page">
+<div id="login-page" class="page">
     <div class="login-box">
-        <h2>ورود / عضویت</h2>
+        <h2 style="color:var(--gold)">ورود / عضویت</h2>
         <input type="text" placeholder="شماره موبایل">
         <input type="password" placeholder="رمز عبور">
         <button class="submit-btn" onclick="alert('خوش آمدید!')">ورود به حساب</button>
-        <p onclick="showPage('shop')" style="cursor:pointer; font-size:12px; margin-top:15px">بازگشت به فروشگاه</p>
+        <p style="margin-top:20px; font-size:0.9rem; cursor:pointer" onclick="showPage('shop-page')">انصراف و بازگشت</p>
     </div>
 </div>
 
 <script>
+    // محصولات
     const products = [
-        { id: 1, name: "برنج ایرانی", price: 750000, icon: "🌾" },
-        { id: 2, name: "روغن جامد", price: 95000, icon: "🏺" },
-        { id: 3, name: "شیر تازه", price: 28000, icon: "🥛" },
-        { id: 4, name: "پنیر تبریز", price: 110000, icon: "🧀" },
-        { id: 5, name: "زعفران قائنات", price: 480000, icon: "🌸" }
+        { id: 1, name: "برنج طارم", price: 750000, icon: "🌾" },
+        { id: 2, name: "روغن لوکس", price: 95000, icon: "🏺" },
+        { id: 3, name: "پنیر تبریز", price: 120000, icon: "🧀" },
+        { id: 4, name: "زعفران اصل", price: 450000, icon: "🌸" },
+        { id: 5, name: "شیر تازه", price: 35000, icon: "🥛" },
+        { id: 6, name: "قهوه اسپرسو", price: 280000, icon: "☕" }
     ];
-    // تولید سریع محصولات تستی
-    for(let i=6; i<=50; i++) products.push({id:i, name:"کالای لوکس "+i, price: 50000+(i*1000), icon:"🎁"});
 
     let cart = JSON.parse(localStorage.getItem('amir_cart')) || [];
 
-    // جابه‌جایی آنی بین صفحات
+    // مدیریت صفحات
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        if(pageId === 'cart') renderCart();
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
+        if(pageId === 'cart-page') renderCart();
     }
 
+    // رندر فروشگاه
     function renderShop() {
         const grid = document.getElementById('product-grid');
         grid.innerHTML = products.map(p => `
-            <div class="card">
+            <div class="card animate__animated animate__fadeInUp">
                 <div class="icon">${p.icon}</div>
-                <h4>${p.name}</h4>
-                <div class="price">${p.price.toLocaleString()} تومان</div>
-                <button class="add-btn" onclick="addToCart(${p.id})">افزودن</button>
+                <h3>${p.name}</h3>
+                <div style="font-weight:bold; color:var(--dark)">${p.price.toLocaleString()} تومان</div>
+                <button class="add-btn" onclick="addToCart(${p.id})">افزودن به سبد</button>
             </div>
         `).join('');
     }
 
     function addToCart(id) {
-        const p = products.find(x => x.id === id);
-        const exist = cart.find(x => x.id === id);
-        if(exist) exist.q++; else cart.push({...p, q:1});
+        const product = products.find(p => p.id === id);
+        const itemInCart = cart.find(item => item.id === id);
+        if(itemInCart) itemInCart.qty++; else cart.push({...product, qty: 1});
         saveCart();
+        alert(`${product.name} به سبد اضافه شد`);
     }
 
     function saveCart() {
         localStorage.setItem('amir_cart', JSON.stringify(cart));
-        updateCartBtn();
+        updateCartUI();
     }
 
-    function updateCartBtn() {
-        let t = 0; cart.forEach(i => t += i.price * i.q);
-        document.getElementById('cart-total').innerText = t.toLocaleString();
+    function updateCartUI() {
+        let total = 0;
+        cart.forEach(i => total += (i.price * i.qty));
+        document.getElementById('cart-total').innerText = total.toLocaleString();
     }
 
     function renderCart() {
-        const list = document.getElementById('cart-list');
-        if(cart.length === 0) { list.innerHTML = "<h4>سبد خرید خالی است</h4>"; return; }
-        list.innerHTML = cart.map((item, idx) => `
-            <div class="cart-item">
-                <span>${item.icon} ${item.name} (x${item.q})</span>
-                <span>${(item.price * item.q).toLocaleString()} تومان</span>
-                <button onclick="removeItem(${idx})" style="border:none; background:red; color:white; border-radius:5px; cursor:pointer">حذف</button>
-            </div>
-        `).join('');
-        let t = 0; cart.forEach(i => t += i.price * i.q);
-        document.getElementById('total-val').innerText = t.toLocaleString();
+        const list = document.getElementById('cart-items-list');
+        const totalSection = document.getElementById('total-section');
+        const emptyMsg = document.getElementById('cart-empty-msg');
+        
+        if(cart.length === 0) {
+            list.innerHTML = '';
+            totalSection.style.display = 'none';
+            emptyMsg.style.display = 'block';
+            return;
+        }
+
+        emptyMsg.style.display = 'none';
+        totalSection.style.display = 'block';
+        let total = 0;
+        
+        list.innerHTML = cart.map((item, index) => {
+            total += (item.price * item.qty);
+            return `
+                <div class="cart-item animate__animated animate__fadeIn">
+                    <div>
+                        <strong>${item.icon} ${item.name}</strong><br>
+                        <small>${item.price.toLocaleString()} تومان</small>
+                    </div>
+                    <div>
+                        <span>تعداد: ${item.qty}</span>
+                        <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:5px; margin-right:10px; cursor:pointer">حذف</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        document.getElementById('final-price').innerText = total.toLocaleString();
     }
 
-    function removeItem(idx) {
-        cart.splice(idx, 1);
+    function removeFromCart(index) {
+        cart.splice(index, 1);
         saveCart();
         renderCart();
     }
 
-    // لودینگ آنی
-    document.addEventListener('DOMContentLoaded', () => {
+    // شروع کار سایت
+    window.addEventListener('load', () => {
         renderShop();
-        updateCartBtn();
-        setTimeout(() => document.getElementById('loader').style.opacity = '0', 400);
-        setTimeout(() => document.getElementById('loader').style.display = 'none', 700);
+        updateCartUI();
+        // حذف لودینگ بلافاصله بعد از آماده شدن
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
     });
 </script>
 
-</body>
-</html>
-    </script>
-</body>
-</html>
-    </script>
 </body>
 </html>
