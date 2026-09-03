@@ -3,267 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امیر مارکت | بزرگترین هایپر کشور</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>امیر مارکت</title>
     <style>
-        :root {
-            --snapp-primary: #008eb2; /* آبی مشابه اسنپ مارکت */
-            --bg: #f5f5f5;
-            --white: #ffffff;
-            --text-dark: #3e3e3e;
-            --gray: #757575;
-        }
+        /* استایل پایه فوق سریع */
+        :root { --p: #008eb2; --bg: #f5f5f5; }
+        * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
+        body { margin: 0; background: var(--bg); overflow-x: hidden; padding-bottom: 60px; }
 
-        * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+        /* لودینگ حبابی - اجرای آنی با CSS */
+        #l { position: fixed; inset: 0; background: #0b141a; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.2s; }
+        .b { width: 80px; height: 80px; background: #7dbbff; border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; animation: a 1.5s infinite alternate; }
+        @keyframes a { to { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; transform: scale(1.1); } }
+        .t { color: white; margin-top: 20px; text-align: center; }
 
-        /* لودینگ حبابی دقیقاً مشابه عکس ارسالی */
-        #loader-wrapper {
-            position: fixed; inset: 0; background: #0b141a; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.3s ease;
-        }
-        .blob {
-            width: 100px; height: 100px;
-            background: #7dbbff; /* رنگ آبی مشابه عکس شما */
-            box-shadow: 0 0 50px rgba(125, 187, 255, 0.4);
-            border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
-            animation: blob-anim 3s infinite alternate;
-        }
-        @keyframes blob-anim {
-            0% { border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; transform: scale(1); }
-            100% { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; transform: scale(1.1) rotate(10deg); }
-        }
-        .loader-text { margin-top: 25px; text-align: center; color: white; }
+        /* هدر فشرده */
+        h { background: #fff; padding: 10px; position: sticky; top: 0; z-index: 100; display: block; box-shadow: 0 2px 5px #0001; }
+        .s { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #f0f0f1; outline: none; margin-top: 5px; }
 
-        /* هدر به سبک اسنپ مارکت */
-        header {
-            background: var(--white); padding: 10px 5%; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { font-weight: 900; color: var(--snapp-primary); font-size: 1.4rem; cursor: pointer; }
-        
-        .search-container { position: relative; width: 100%; }
-        .search-container input {
-            width: 100%; padding: 12px 45px 12px 15px; border-radius: 12px;
-            border: 1px solid #e0e0e0; background: #f0f0f1; outline: none; font-size: 0.9rem;
-        }
-        .search-container i { position: absolute; right: 15px; top: 14px; color: var(--gray); }
+        /* محصولات */
+        .c { padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .i { background: #fff; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; border: 1px solid #eee; }
+        .i img { width: 100%; height: 120px; object-fit: contain; }
+        .i h3 { font-size: 13px; height: 35px; margin: 5px 0; overflow: hidden; }
+        .pr { font-weight: bold; color: #000; font-size: 14px; }
+        .btn { background: #fff; color: var(--p); border: 1px solid var(--p); border-radius: 6px; padding: 5px 10px; cursor: pointer; float: left; }
 
-        /* استایل محصولات سه سوت و اسنپ */
-        .container { padding: 15px; max-width: 1200px; margin: 0 auto; }
-        .product-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
-        }
-        .card {
-            background: var(--white); border-radius: 15px; padding: 12px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            position: relative; border: 1px solid #f0f0f0; transition: 0.2s;
-        }
-        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .card img { width: 100%; height: 140px; object-fit: contain; margin-bottom: 8px; }
-        .card h3 { font-size: 0.85rem; margin: 5px 0; height: 40px; overflow: hidden; line-height: 1.4; color: #424242; }
-        .price { font-weight: 800; color: #000; font-size: 1rem; margin: 8px 0; }
-        
-        .add-btn {
-            background: var(--white); color: var(--snapp-primary);
-            border: 1px solid var(--snapp-primary); width: 32px; height: 32px;
-            border-radius: 8px; cursor: pointer; font-size: 1.2rem;
-            align-self: flex-end; display: flex; align-items: center; justify-content: center;
-        }
-        .add-btn:hover { background: var(--snapp-primary); color: white; }
-
-        /* سبد خرید */
-        .page { display: none; }
+        /* صفحات */
+        .p { display: none; padding: 10px; }
         .active { display: block; }
-        .cart-item {
-            background: var(--white); padding: 12px; border-radius: 12px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
-        }
-        .delete-btn { color: #ff5252; border: none; background: none; font-size: 1.2rem; cursor: pointer; }
-
-        /* نوار پایین شبیه اپلیکیشن */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000;
-        }
-        .nav-item { text-align: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; }
-        .nav-item.active { color: var(--snapp-primary); }
-        .badge { position: absolute; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; margin-right: 15px; }
-
-        @media (min-width: 768px) {
-            .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-        }
+        
+        /* منو پایین */
+        .m { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 8px; border-top: 1px solid #eee; }
+        .mi { text-align: center; font-size: 11px; color: #777; cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<!-- لودینگ اختصاصی (عکس ارسالی شما) -->
-<div id="loader-wrapper">
-    <div class="blob"></div>
-    <div class="loader-text">
-        <h2 style="margin-bottom:5px;">امیر مارکت</h2>
-        <p style="opacity:0.7;">در انتظار ورود به امیر مارکت...</p>
+<div id="l"><div class="b"></div><div class="t"><b>امیر مارکت</b><br><small>در انتظار ورود...</small></div></div>
+
+<h>
+    <div style="display:flex; justify-content:space-between; color:var(--p); font-weight:bold">
+        <span onclick="v('sh')">AMIR MARKET</span>
+        <span onclick="v('ca')">🛒 <span id="cc">۰</span></span>
+    </div>
+    <input type="text" class="s" placeholder="جستجوی سریع..." onkeyup="sr(this.value)">
+</h>
+
+<div id="sh" class="p active"><div class="c" id="g"></div></div>
+
+<div id="ca" class="p">
+    <h3>سبد خرید</h3>
+    <div id="cl"></div>
+    <div id="sum" style="margin-top:20px; padding:15px; background:#fff; border-radius:10px">
+        جمع کل: <b id="tp">۰</b> تومان
+        <button onclick="alert('اتصال به بانک ملت...')" style="width:100%; background:var(--p); color:#fff; border:none; padding:12px; border-radius:8px; margin-top:10px">پرداخت نهایی</button>
     </div>
 </div>
 
-<header>
-    <div class="header-top">
-        <div class="logo" onclick="showPage('shop')">AMIR MARKET</div>
-        <div style="font-size: 0.8rem; color: var(--gray);">بزرگترین هایپر کشور</div>
-    </div>
-    <div class="search-container">
-        <i class="fa fa-search"></i>
-        <input type="text" id="searchInput" placeholder="جستجوی سریع محصولات..." onkeyup="search()">
-    </div>
-</header>
-
-<!-- صفحه فروشگاه -->
-<main id="shop" class="page active">
-    <div class="container">
-        <div class="product-grid" id="productGrid"></div>
-    </div>
-</main>
-
-<!-- صفحه سبد خرید -->
-<div id="cart" class="page container">
-    <h3 style="margin-bottom:20px;">سبد خرید</h3>
-    <div id="cartList"></div>
-    <div id="cartSummary" style="background:var(--white); padding:20px; border-radius:15px; margin-top:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <span>جمع کل:</span>
-            <span id="final-price" style="font-weight:900; font-size:1.2rem;">۰ تومان</span>
-        </div>
-        <button style="background:var(--snapp-primary); color:white; width:100%; padding:15px; border:none; border-radius:12px; font-weight:bold; cursor:pointer;" onclick="payment()">پرداخت از درگاه ملت</button>
-    </div>
-</div>
-
-<!-- ناوبری پایین -->
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="showPage('shop')"><i class="fa fa-home" style="font-size:1.4rem;"></i><div>ویترین</div></div>
-    <div class="nav-item" onclick="showPage('cart')">
-        <span class="badge" id="cart-count">۰</span>
-        <i class="fa fa-shopping-basket" style="font-size:1.4rem;"></i><div>سبد خرید</div>
-    </div>
-    <div class="nav-item"><i class="fa fa-user" style="font-size:1.4rem;"></i><div>حساب من</div></div>
+<div class="m">
+    <div class="mi" onclick="v('sh')">🏠<br>ویترین</div>
+    <div class="mi" onclick="v('ca')">🛍️<br>سبد خرید</div>
 </div>
 
 <script>
-    // محصولات دقیق (عکس‌ها دقیقاً مطابق نام کالا)
-    const products = [
-        { id: 1, name: "روغن مایع آفتابگردان لادن ۸۱۰ گرم", price: 198000, img: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
-        { id: 2, name: "برنج طارم هاشمی درجه یک ۱۰ کیلو", price: 1250000, img: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
-        { id: 3, name: "چای احمد ۵۰۰ گرمی ساده", price: 285000, img: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
-        { id: 4, name: "پنیر سفید ۹۰۰ گرمی میهن", price: 115000, img: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
-        { id: 5, name: "رب گوجه فرنگی ۸۰۰ گرمی طبیعت", price: 49500, img: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
-        { id: 6, name: "ماکارونی ۷۰۰ گرمی زرماکارون", price: 27000, img: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" },
-        { id: 7, name: "شکر سفید بسته ۵ کیلویی", price: 235000, img: "https://dkstatics-public.digikala.com/digikala-products/3440786.jpg" },
-        { id: 8, name: "مایع ظرفشویی پریل ۳.۷۵ لیتری", price: 175000, img: "https://dkstatics-public.digikala.com/digikala-products/111326.jpg" }
+    const data = [
+        { id: 1, n: "روغن لادن ۸۱۰ گرم", p: 198000, g: "https://dkstatics-public.digikala.com/digikala-products/111620021.jpg" },
+        { id: 2, n: "برنج طارم ۱۰ کیلو", p: 1250000, g: "https://dkstatics-public.digikala.com/digikala-products/112521503.jpg" },
+        { id: 3, n: "چای احمد ۵۰۰ گرم", p: 285000, g: "https://dkstatics-public.digikala.com/digikala-products/b9442b083325712e5414f52e50529949f29633e9_1634044566.jpg" },
+        { id: 4, n: "پنیر میهن ۹۰۰ گرم", p: 115000, g: "https://dkstatics-public.digikala.com/digikala-products/119565532.jpg" },
+        { id: 5, n: "رب طبیعت ۸۰۰ گرم", p: 49500, g: "https://dkstatics-public.digikala.com/digikala-products/121085444.jpg" },
+        { id: 6, n: "ماکارونی ۷۰۰ گرم زر", p: 27000, g: "https://dkstatics-public.digikala.com/digikala-products/114620.jpg" }
     ];
 
-    let cart = JSON.parse(localStorage.getItem('amir_market_v3')) || [];
+    let cart = [];
 
-    // لودینگ آنی
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            const loader = document.getElementById('loader-wrapper');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 300);
-        }, 800); // زیر ۱ ثانیه سایت بالا می‌آید
-        renderProducts(products);
-        updateUI();
-    });
+    // لودینگ آنی (زیر ۰.۵ ثانیه)
+    window.onload = () => {
+        document.getElementById('l').style.opacity = '0';
+        setTimeout(() => document.getElementById('l').style.display = 'none', 200);
+        render(data);
+    };
 
-    function renderProducts(items) {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = items.map(p => `
-            <div class="card">
-                <img src="${p.img}" alt="${p.name}">
-                <h3>${p.name}</h3>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="price">${p.price.toLocaleString()} <span style="font-size:0.6rem;">تومان</span></div>
-                    <button class="add-btn" onclick="addToCart(${p.id})">+</button>
+    function render(items) {
+        document.getElementById('g').innerHTML = items.map(x => `
+            <div class="i">
+                <img src="${x.g}" loading="lazy">
+                <h3>${x.n}</h3>
+                <div>
+                    <span class="pr">${x.p.toLocaleString()}</span>
+                    <button class="btn" onclick="add(${x.id})">+</button>
                 </div>
             </div>
         `).join('');
     }
 
-    function search() {
-        const term = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p => p.name.includes(term));
-        renderProducts(filtered);
+    function sr(v) {
+        render(data.filter(x => x.n.includes(v)));
     }
 
-    function addToCart(id) {
-        const p = products.find(x => x.id === id);
-        const exist = cart.find(x => x.id === id);
-        if(exist) exist.qty++; else cart.push({...p, qty: 1});
-        save();
+    function add(id) {
+        const item = data.find(x => x.id === id);
+        cart.push(item);
+        document.getElementById('cc').innerText = cart.length;
+        alert('اضافه شد');
     }
 
-    function save() {
-        localStorage.setItem('amir_market_v3', JSON.stringify(cart));
-        updateUI();
-    }
-
-    function updateUI() {
-        const count = cart.reduce((acc, i) => acc + i.qty, 0);
-        document.getElementById('cart-count').innerText = count;
-    }
-
-    function renderCart() {
-        const list = document.getElementById('cartList');
-        const summary = document.getElementById('cartSummary');
-        if(cart.length === 0) {
-            list.innerHTML = `<div style="text-align:center; padding:50px; color:#999;">سبد خرید خالی است</div>`;
-            summary.style.display = "none";
-            return;
-        }
-        summary.style.display = "block";
-        let total = 0;
-        list.innerHTML = cart.map((item, idx) => {
-            total += item.price * item.qty;
-            return `
-                <div class="cart-item">
-                    <img src="${item.img}" width="50">
-                    <div style="flex:1; margin-right: 15px;">
-                        <div style="font-size:0.85rem; font-weight:bold;">${item.name}</div>
-                        <div style="color:var(--snapp-primary); font-size:0.8rem;">${item.qty} عدد</div>
-                    </div>
-                    <div style="font-weight:bold; margin-left:15px;">${(item.price * item.qty).toLocaleString()}</div>
-                    <button class="delete-btn" onclick="remove(${idx})"><i class="fa fa-trash-can"></i></button>
-                </div>
-            `;
-        }).join('');
-        document.getElementById('final-price').innerText = total.toLocaleString() + " تومان";
-    }
-
-    function remove(idx) {
-        cart.splice(idx, 1);
-        save();
-        renderCart();
-    }
-
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    function v(id) {
+        document.querySelectorAll('.p').forEach(x => x.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'cart') renderCart();
-        window.scrollTo(0,0);
+        if(id === 'ca') rc();
     }
 
-    function payment() {
-        alert("در حال اتصال ایمن به درگاه به پرداخت ملت...");
-        setTimeout(() => {
-            alert("تراکنش موفقیت آمیز بود. کالاهای شما به زودی توسط امیر مارکت ارسال می‌شود.");
-            cart = []; save(); showPage('shop');
-        }, 1500);
+    function rc() {
+        const l = document.getElementById('cl');
+        if(!cart.length) { l.innerHTML = "خالی است"; return; }
+        let t = 0;
+        l.innerHTML = cart.map((x, i) => {
+            t += x.p;
+            return `<div style="background:#fff; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between">
+                <span>${x.n}</span>
+                <b>${x.p.toLocaleString()} <span onclick="del(${i})" style="color:red; cursor:pointer">🗑️</span></b>
+            </div>`;
+        }).join('');
+        document.getElementById('tp').innerText = t.toLocaleString();
     }
+
+    function del(i) {
+        cart.splice(i, 1);
+        document.getElementById('cc').innerText = cart.length;
+        rc();
+    }
+
+    function showPage(id) { v(id); }
 </script>
 
 </body>
